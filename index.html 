@@ -1,0 +1,464 @@
+import React, { useState } from 'react';
+import { 
+  Sparkles, Shield, TrendingUp, AlertTriangle, CheckCircle, XCircle, 
+  Search, Phone, Mail, FileText, User, ArrowRight, Play, LayoutDashboard,
+  Bell, Settings, MessageSquare, ShieldAlert, BarChart3, HelpCircle, ChevronRight, Globe,
+  Menu, X, Lock, Eye, ListFilter
+} from 'lucide-react';
+
+export default function VeriLifeApp() {
+  const [currentView, setCurrentView] = useState('landing');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeAnalysisId, setActiveAnalysisId] = useState(1);
+
+  const [prebuiltAnalyses, setPrebuiltAnalyses] = useState([
+    {
+      id: 1,
+      question: "How likely am I to make it in dropshipping at 17?",
+      status: "Risky",
+      statusColor: "text-amber-700 bg-amber-50 border-amber-200",
+      percentage: 42,
+      summary: "Based on our analysis of current market trends, youth entrepreneurial demographics, and historical supply chain failure rates, this path shows limited immediate margin potential and carries heavy upfront marketing risk.",
+      checks: [
+        { label: "Market Viability Verified", status: true },
+        { label: "Clear Risk Mitigation Strategy", status: false },
+        { label: "Low Financial Exposure", status: false },
+        { label: "Positive Community Feedback", status: true }
+      ]
+    },
+    {
+      id: 2,
+      question: "Investing $1k into Index Funds vs Crypto",
+      status: "Safe",
+      statusColor: "text-emerald-700 bg-emerald-50 border-emerald-200",
+      percentage: 78,
+      summary: "Data indicates strong underlying stability with index fund baselines compensating for crypto volatility. Recommended allocation favors high-probability risk-managed wealth accumulation.",
+      checks: [
+        { label: "Market Viability Verified", status: true },
+        { label: "Clear Risk Mitigation Strategy", status: true },
+        { label: "Low Financial Exposure", status: true },
+        { label: "Positive Community Feedback", status: false }
+      ]
+    },
+    {
+      id: 3,
+      question: "Moving to a new city for a junior dev role",
+      status: "High Probability",
+      statusColor: "text-green-700 bg-green-50 border-green-200",
+      percentage: 85,
+      summary: "Macroeconomic indicators show rapid tech ecosystem expansion in the target destination. Career compounding metrics heavily outweigh short-term relocation friction.",
+      checks: [
+        { label: "Market Viability Verified", status: true },
+        { label: "Clear Risk Mitigation Strategy", status: true },
+        { label: "Low Financial Exposure", status: false },
+        { label: "Positive Community Feedback", status: true }
+      ]
+    },
+    {
+      id: 4,
+      question: "Starting a software agency with no capital",
+      status: "Low Probability",
+      statusColor: "text-rose-700 bg-rose-50 border-rose-200",
+      percentage: 29,
+      summary: "High market saturation and long organic pipeline delays generate severe initial cashflow strain. Real-time patterns suggest securing an initial anchor client prior to full operational scaling.",
+      checks: [
+        { label: "Market Viability Verified", status: false },
+        { label: "Clear Risk Mitigation Strategy", status: false },
+        { label: "Low Financial Exposure", status: true },
+        { label: "Positive Community Feedback", status: false }
+      ]
+    }
+  ]);
+
+  const currentAnalysis = prebuiltAnalyses.find(a => a.id === activeAnalysisId) || prebuiltAnalyses[0];
+
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (currentAnalysis.percentage / 100) * circumference;
+
+  const handleAnalyze = (e) => {
+    if (e) e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    const generatedPercentage = Math.floor(Math.random() * (95 - 20 + 1)) + 20;
+    let status = "Moderate";
+    let statusColor = "text-emerald-700 bg-emerald-50 border-emerald-200";
+
+    if (generatedPercentage < 45) {
+      status = "Risky";
+      statusColor = "text-rose-700 bg-rose-50 border-rose-200";
+    } else if (generatedPercentage > 75) {
+      status = "High Stability";
+      statusColor = "text-green-700 bg-green-50 border-green-200";
+    }
+
+    const newAnalysis = {
+      id: Date.now(),
+      question: searchQuery,
+      status,
+      statusColor,
+      percentage: generatedPercentage,
+      summary: `Based on verified metrics regarding "${searchQuery}", our algorithmic suite assigns a ${generatedPercentage}% structural safety rating. Mitigating near-term friction indices will optimize this baseline calculation.`,
+      checks: [
+        { label: "Market Viability Verified", status: generatedPercentage > 40 },
+        { label: "Clear Risk Mitigation Strategy", status: generatedPercentage > 60 },
+        { label: "Low Financial Exposure", status: true },
+        { label: "Positive Community Feedback", status: generatedPercentage > 50 }
+      ]
+    };
+
+    setPrebuiltAnalyses([newAnalysis, ...prebuiltAnalyses]);
+    setActiveAnalysisId(newAnalysis.id);
+    setSearchQuery('');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-green-200 selection:text-green-900">
+      
+      {/* ===================== LANDING PAGE ===================== */}
+      {currentView === 'landing' && (
+        <div className="relative overflow-hidden bg-white">
+          <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-green-100/40 rounded-full blur-[140px] pointer-events-none" />
+          <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-emerald-100/30 rounded-full blur-[100px] pointer-events-none" />
+
+          {/* Nav */}
+          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between border-b border-slate-100 relative z-20">
+            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentView('landing')}>
+              <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 p-0.5 shadow-md shadow-green-500/10">
+                <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 text-lg">
+                  VL
+                </div>
+              </div>
+              <span className="text-xl font-bold tracking-tight text-slate-900">VeriLife</span>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+              <a href="#features" className="hover:text-green-600 transition">Features</a>
+              <a href="#how-it-works" className="hover:text-green-600 transition">How It Works</a>
+              <a href="#use-cases" className="hover:text-green-600 transition">Use Cases</a>
+              <a href="#pricing" className="hover:text-green-600 transition">Pricing</a>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <button onClick={() => setCurrentView('dashboard')} className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition px-4 py-2">
+                Log in
+              </button>
+              <button onClick={() => setCurrentView('dashboard')} className="text-sm font-semibold bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl transition duration-200 shadow-lg shadow-green-600/20 active:scale-95">
+                Get Started
+              </button>
+            </div>
+          </nav>
+
+          {/* Hero */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              
+              <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
+                <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-xs font-semibold text-green-700 tracking-wide">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>AI-POWERED TRUST & DECISION INTELLIGENCE</span>
+                </div>
+
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
+                  Make Smarter Decisions.<br />
+                  Live a <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Safer</span> Life.
+                </h1>
+
+                <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  VeriLife helps you verify, analyze, and decide with confidence. Avoid scams, verify identities, and make better choices with the structural power of continuous macro AI data modeling.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                  <button onClick={() => setCurrentView('dashboard')} className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold transition shadow-xl shadow-green-600/20 group active:scale-95">
+                    <span>Start Free Analysis</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                  </button>
+                  <button className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition font-semibold">
+                    <Play className="w-4 h-4 text-green-600 fill-green-600/10" />
+                    <span>Watch Demo</span>
+                  </button>
+                </div>
+
+                <div className="pt-6 grid grid-cols-2 gap-4 max-w-lg mx-auto lg:mx-0 border-t border-slate-100">
+                  <div className="flex items-center space-x-2.5 text-slate-600 text-sm">
+                    <TrendingUp className="w-4 h-4 text-green-600" />
+                    <span>AI Risk Analysis</span>
+                  </div>
+                  <div className="flex items-center space-x-2.5 text-slate-600 text-sm">
+                    <Shield className="w-4 h-4 text-emerald-600" />
+                    <span>Identity Verification</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Phone Mockup */}
+              <div className="lg:col-span-5 relative">
+                <div className="relative mx-auto max-w-[340px] rounded-[40px] border-[8px] border-slate-900 bg-slate-900 p-3 shadow-2xl shadow-slate-900/10">
+                  <div className="rounded-[30px] overflow-hidden bg-white p-4 space-y-4 text-left">
+                    <div className="flex justify-between items-center text-xs text-slate-400 pb-2 border-b border-slate-100">
+                      <span className="font-bold text-green-600">VeriLife Panel</span>
+                      <div className="w-3 h-3 rounded-full bg-slate-200" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-bold text-slate-900">Analyze Anything</h4>
+                      <p className="text-[11px] text-slate-500">Paste links, numbers, or describe layouts instantly.</p>
+                    </div>
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-600 flex items-center justify-between">
+                      <span className="truncate">How likely am I to make it in dropshipping...</span>
+                      <Sparkles className="w-3.5 h-3.5 text-green-500 shrink-0 ml-1" />
+                    </div>
+                    <div className="bg-green-50/50 border border-green-100 rounded-xl p-3 text-center space-y-2">
+                      <div className="text-2xl font-black text-green-600">42%</div>
+                      <div className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md inline-block font-semibold">Risky Profile Matrix</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================== DASHBOARD ===================== */}
+      {currentView === 'dashboard' && (
+        <div className="flex h-screen bg-slate-50 overflow-hidden">
+          
+          {/* Sidebar */}
+          <aside className="w-64 bg-white border-r border-slate-200 flex-col justify-between hidden lg:flex">
+            <div>
+              <div className="h-20 px-6 flex items-center space-x-3 border-b border-slate-100 cursor-pointer" onClick={() => setCurrentView('landing')}>
+                <div className="w-7 h-7 flex items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 p-0.5">
+                  <div className="w-full h-full bg-white rounded-[6px] flex items-center justify-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 text-xs">
+                    VL
+                  </div>
+                </div>
+                <span className="text-lg font-bold tracking-tight text-slate-900">VeriLife</span>
+              </div>
+
+              <nav className="p-4 space-y-1">
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-green-700 bg-green-50 border border-green-100 transition">
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>Decision Maker</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                  <Shield className="w-4 h-4" />
+                  <span>Verifications</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Scans</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                  <MessageSquare className="w-4 h-4" />
+                  <span className="flex-1 text-left">Messages</span>
+                  <span className="bg-green-100 text-green-800 text-[11px] px-2 py-0.5 rounded-full font-bold">3</span>
+                </button>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                  <Settings className="w-4 h-4" />
+                  <span>Settings</span>
+                </button>
+              </nav>
+            </div>
+
+            <div className="p-4 m-4 rounded-2xl bg-gradient-to-b from-green-50 to-white border border-green-100 text-center space-y-3">
+              <ShieldAlert className="w-6 h-6 text-green-600 mx-auto" />
+              <div>
+                <h5 className="text-sm font-bold text-slate-900">Go Premium</h5>
+                <p className="text-xs text-slate-500 mt-1">Unlock unlimited predictive scenario analytics loops.</p>
+              </div>
+              <button className="w-full text-xs font-bold py-2.5 rounded-xl bg-green-600 text-white shadow-md shadow-green-600/10 hover:bg-green-700 transition">
+                Upgrade Now
+              </button>
+            </div>
+          </aside>
+
+          {/* Main */}
+          <main className="flex-1 flex flex-col overflow-y-auto bg-slate-50">
+            
+            <header className="h-20 border-b border-slate-200/80 px-6 sm:px-8 flex items-center justify-between shrink-0 bg-white shadow-sm z-10">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Decision Maker</h2>
+                <p className="text-xs text-slate-500 hidden sm:block">Get AI-powered insights & verified risk metrics.</p>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <button onClick={() => setCurrentView('landing')} className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900 transition shadow-sm">
+                  View Landing Page
+                </button>
+                <button className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-500 transition relative shadow-sm">
+                  <Bell className="w-4 h-4" />
+                  <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-rose-500 rounded-full" />
+                </button>
+                <div className="flex items-center space-x-2.5 border-l border-slate-200 pl-4">
+                  <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-xs shadow-md shadow-green-600/20">
+                    DO
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <div className="text-xs font-bold text-slate-900">David O.</div>
+                    <div className="text-[10px] text-green-600 font-bold">Premium Tier</div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div className="p-6 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
+              
+              {/* Input */}
+              <form onSubmit={handleAnalyze} className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-sm">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">What scenario or strategy would you like to verify today?</label>
+                <div className="relative flex items-center">
+                  <input 
+                    type="text" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Ask a question, paste an address, or input variables... (e.g., 'How likely am I to make it in dropshipping at 17?')" 
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-green-500 focus:bg-white rounded-xl py-3.5 pl-4 pr-32 text-sm text-slate-900 placeholder-slate-400 outline-none transition"
+                  />
+                  <button type="submit" className="absolute right-2 px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold flex items-center space-x-1.5 hover:bg-green-700 transition shadow-md shadow-green-600/10">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Analyze</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2 pt-1 text-xs">
+                  <button type="button" className="px-3 py-1.5 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-center space-x-1 font-medium">
+                    <TrendingUp className="w-3 h-3" /><span>Business Venture</span>
+                  </button>
+                  <button type="button" className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center space-x-1">
+                    <User className="w-3 h-3" /><span>Career & Job Metrics</span>
+                  </button>
+                  <button type="button" className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center space-x-1">
+                    <FileText className="w-3 h-3" /><span>Investment Strategy</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* 3-column grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                {/* Recent analyses */}
+                <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-sm">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Recent Profile Analyses</h3>
+                    <button type="button" className="text-xs font-semibold text-green-600 hover:underline">View All</button>
+                  </div>
+
+                  <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+                    {prebuiltAnalyses.map((item) => (
+                      <button 
+                        key={item.id}
+                        type="button"
+                        onClick={() => setActiveAnalysisId(item.id)}
+                        className={`w-full p-3.5 rounded-xl border text-left transition flex flex-col gap-2 shadow-sm ${
+                          activeAnalysisId === item.id 
+                            ? 'bg-green-50/60 border-green-400/60 ring-1 ring-green-400/30' 
+                            : 'bg-white border-slate-100 hover:border-slate-200 hover:bg-slate-50/50'
+                        }`}
+                      >
+                        <p className="text-xs font-bold text-slate-800 line-clamp-1">{item.question}</p>
+                        <div className="flex justify-between items-center w-full">
+                          <span className={`text-[10px] px-2 py-0.5 rounded-md border font-semibold ${item.statusColor}`}>
+                            {item.status}
+                          </span>
+                          <span className="text-xs font-extrabold text-slate-500">{item.percentage}%</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trust gauge */}
+                <div className="lg:col-span-3 bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between text-center space-y-6">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Trust Score</h3>
+                  
+                  <div className="relative flex items-center justify-center">
+                    <svg className="w-36 h-36 transform -rotate-90">
+                      <circle cx="72" cy="72" r={radius} stroke="#f1f5f9" strokeWidth="10" fill="transparent" />
+                      <circle 
+                        cx="72" cy="72" r={radius}
+                        stroke="url(#greenBrandGradient)"
+                        strokeWidth="10" fill="transparent"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                        style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
+                      />
+                      <defs>
+                        <linearGradient id="greenBrandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#22c55e" />
+                          <stop offset="100%" stopColor="#059669" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <div className="absolute flex flex-col items-center justify-center">
+                      <span className="text-4xl font-black text-slate-900">{currentAnalysis.percentage}</span>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">/ 100</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <span className={`text-xs px-3 py-1 rounded-full border inline-block font-bold ${currentAnalysis.statusColor}`}>
+                      {currentAnalysis.status} Matrix
+                    </span>
+                    <p className="text-xs text-slate-500 leading-relaxed px-2">
+                      Verified datasets map structural risk confidence ratios at {currentAnalysis.percentage} points for this item input.
+                    </p>
+                  </div>
+                </div>
+
+                {/* AI recommendation */}
+                <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-5">
+                  <div className="space-y-3">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">AI Recommendation</h3>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 leading-relaxed font-medium min-h-[110px]">
+                      {currentAnalysis.summary}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5 border-t border-slate-100 pt-3">
+                    {currentAnalysis.checks.map((check, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-xs px-1">
+                        <span className="text-slate-500 font-medium">{check.label}</span>
+                        {check.status ? (
+                          <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                        ) : (
+                          <XCircle className="w-4 h-4 text-rose-500/80 shrink-0" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-green-50 border border-green-100 rounded-xl p-2.5 flex items-center justify-center space-x-2 text-[11px] font-bold text-green-700">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span>Continuous data feeds verified active</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom bar */}
+              <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-green-600/10">
+                <div className="flex items-center space-x-3 text-center sm:text-left">
+                  <div className="p-2 rounded-xl bg-white/10 text-white hidden sm:block">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Continuous Probability Signals Enabled</h4>
+                    <p className="text-xs text-green-100/90">Get custom alerts on your device the moment external variables shift safety metrics by ±5%.</p>
+                  </div>
+                </div>
+                <button type="button" className="w-full sm:w-auto shrink-0 px-4 py-2.5 bg-white text-green-700 hover:bg-green-50 rounded-xl text-xs font-bold transition shadow-sm">
+                  Enable Protection
+                </button>
+              </div>
+
+            </div>
+          </main>
+        </div>
+      )}
+
+    </div>
+  );
+}
