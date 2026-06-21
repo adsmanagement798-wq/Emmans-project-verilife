@@ -10,7 +10,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Custom UI Scrollbar for mobile panels */
+    /* Clean custom scrollbar for dashboard panels */
     .custom-scroll::-webkit-scrollbar {
       width: 5px;
     }
@@ -21,22 +21,22 @@
       background: #cbd5e1;
       border-radius: 4px;
     }
-    /* Smooth rotation transition for score indicator gauges */
+    /* SVG Gauge smooth progression styling */
     .gauge-arc {
-      transition: stroke-dashoffset 0.5s ease-in-out;
+      transition: stroke-dashoffset 0.4s ease-in-out, stroke 0.3s ease;
     }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased select-none">
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased">
 
   <div id="landingView" class="block min-h-screen bg-white">
     <nav class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between border-b border-slate-100">
-      <button type="button" onclick="switchView('landing')" class="flex items-center space-x-3 text-left focus:outline-none">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('landing')">
         <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white font-bold text-base shadow-sm">
           VL
         </div>
         <span class="text-lg font-bold tracking-tight text-slate-900">VeriLife</span>
-      </button>
+      </div>
 
       <div class="flex items-center space-x-4">
         <button type="button" onclick="switchView('dashboard')" class="text-xs font-bold bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition shadow-md shadow-emerald-600/10">
@@ -60,7 +60,7 @@
         VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
       </p>
 
-      <div class="flex justify-center pt-4">
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-3 pt-4">
         <button type="button" onclick="switchView('dashboard')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition">
           <span>Start Free Analysis</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -89,12 +89,12 @@
     <header class="h-20 border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between bg-white shrink-0 sticky top-0 z-50">
       <div>
         <h2 class="text-sm font-extrabold text-slate-900 tracking-wide uppercase">Decision Maker</h2>
-        <p class="text-[11px] text-slate-500">AI-powered insights & probability analysis</p>
+        <p class="text-[11px] text-slate-500">AI-powered insights & real-time probability analysis</p>
       </div>
       <div class="flex items-center space-x-3">
         <button type="button" onclick="clearAndFocusInput()" class="inline-flex items-center space-x-1.5 bg-emerald-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold hover:bg-emerald-700 transition">
           <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-          <span>New</span>
+          <span>New Analysis</span>
         </button>
         <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold border border-emerald-200 text-emerald-800">D</div>
         <button type="button" onclick="switchView('landing')" class="p-2 text-slate-400 hover:text-slate-600 transition">
@@ -153,7 +153,7 @@
           </svg>
           <div class="absolute flex flex-col items-center justify-center">
             <div class="flex items-baseline justify-center">
-              <span id="scoreVal" class="text-3xl font-black text-slate-900 tracking-tight">0</span>
+              <span id="scoreVal" class="text-3xl font-black text-slate-900 tracking-tight">42</span>
               <span class="text-[10px] text-slate-400 font-bold ml-0.5">/100</span>
             </div>
             <span id="labelBadge" class="mt-0.5 text-[9px] px-2 py-0.5 font-bold rounded-md bg-amber-50 text-amber-700 border border-amber-200">Risky</span>
@@ -161,7 +161,7 @@
         </div>
 
         <p id="contextNotes" class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-          Evaluating strategy configurations...
+          High risk profile. Current data does not support a high-confidence outcome. Review strategy setup configurations.
         </p>
 
         <button type="button" class="w-full bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs flex items-center justify-center space-x-1 transition">
@@ -171,12 +171,10 @@
       </div>
 
       <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-4">
-        <div class="flex justify-between items-center">
-          <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Recommendation</h3>
-        </div>
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Recommendation</h3>
 
         <p id="recParagraph" class="text-xs text-slate-600 leading-relaxed bg-slate-50 border border-slate-100 p-3 rounded-xl">
-          Select or add an item to view tracking records data summaries.
+          Based on our analysis of current market trends, demographic data, and historical failure/success rates, this path shows limited potential but carries specific notable risks that require attention.
         </p>
 
         <div id="checklistsGrid" class="space-y-2.5 pt-1 border-t border-slate-100">
@@ -208,7 +206,7 @@
 
 
   <script>
-    // State Tracking Data Matrix Configuration Models 
+    // Main Reactive Core Dataset State
     let analysesDataset = [
       {
         id: 1,
@@ -278,8 +276,8 @@
 
     let currentSelectedId = 1;
 
-    // Layout view state transitions router switches
-    function switchView(viewKey) {
+    // Fixed Global Routing Function Handler View Toggler
+    window.switchView = function(viewKey) {
       const landing = document.getElementById('landingView');
       const dashboard = document.getElementById('dashboardView');
       
@@ -291,49 +289,48 @@
         dashboard.style.display = 'flex';
         refreshDashboardView();
       }
-    }
+    };
 
-    // Refresh Dashboard Data Bindings Matrix Models Fields View Update 
-    function refreshDashboardView() {
+    // Main Engine Re-rendering Content State Updates Natively
+    window.refreshDashboardView = function() {
       const recentsContainer = document.getElementById('recentsWrapper');
       if (!recentsContainer) return;
-      
+
       recentsContainer.innerHTML = '';
       const currentItem = analysesDataset.find(item => item.id === currentSelectedId) || analysesDataset[0];
 
-      // Compiling list row elements metrics items fields records labels
+      // Injecting individual recent card elements dynamically with clickable handlers
       analysesDataset.forEach(data => {
         const isActive = data.id === currentSelectedId;
         const btn = document.createElement('button');
         btn.type = 'button';
         
-        // Mobile tap touch interaction handling 
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
+        // Native interactive onclick binder
+        btn.onclick = function() {
           currentSelectedId = data.id;
           refreshDashboardView();
-        });
+        };
 
         btn.className = `w-full p-3.5 rounded-xl border text-left transition flex justify-between items-center ${
-          isActive ? 'bg-slate-50 border-emerald-500 ring-1 ring-emerald-500/10' : 'bg-white border-slate-100 hover:bg-slate-50'
+          isActive ? 'bg-slate-50 border-emerald-500 ring-1 ring-emerald-500/20' : 'bg-white border-slate-100 hover:bg-slate-50'
         }`;
 
         btn.innerHTML = `
-          <div class="space-y-1 max-w-[80%] pointer-events-none">
+          <div class="space-y-1 max-w-[80%]">
             <p class="text-xs font-bold text-slate-800 line-clamp-1">${escapeCode(data.question)}</p>
             <div class="flex items-center space-x-1.5">
               <span class="w-1.5 h-1.5 rounded-full ${data.percentage > 50 ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
               <span class="text-[10px] font-bold text-slate-500">${data.status}</span>
             </div>
           </div>
-          <span class="text-xs font-black ${isActive ? 'text-emerald-600' : 'text-slate-400'} pointer-events-none">${data.percentage}%</span>
+          <span class="text-xs font-black ${isActive ? 'text-emerald-600' : 'text-slate-400'}">${data.percentage}%</span>
         `;
         recentsContainer.appendChild(btn);
       });
 
-      // Gauge Circle Arc properties offset calculations 
+      // Gauge Circular Progress calculation adjustments
       const radius = 46;
-      const circumference = 2 * Math.PI * radius; // 289
+      const circumference = 2 * Math.PI * radius;
       const scoreOffset = circumference - (currentItem.percentage / 100) * circumference;
       
       const targetCircle = document.getElementById('metricArc');
@@ -354,7 +351,7 @@
       document.getElementById('contextNotes').innerText = currentItem.notes;
       document.getElementById('recParagraph').innerText = currentItem.summary;
 
-      // Rendering checklist list item entries 
+      // Rendering structural checklist variables markers logic lists
       const gridChecks = document.getElementById('checklistsGrid');
       if (gridChecks) {
         gridChecks.innerHTML = '';
@@ -373,14 +370,14 @@
         });
       }
 
-      // Re-initialize Lucide icon graphics layers
+      // Reinitialize visual SVG vectors mapping icons
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
       }
-    }
+    };
 
-    // Input text evaluation logic handler execution engine parameters mapping data entry 
-    function triggerAnalysis() {
+    // User Text input analytical engine simulations pipeline execution 
+    window.triggerAnalysis = function() {
       const input = document.getElementById('queryInput');
       if (!input) return;
       const textVal = input.value.trim();
@@ -408,8 +405,8 @@
         themeClass,
         strokeColor,
         percentage: mockPercent,
-        notes: "Real-time verification calculations successfully loaded matching parameters index records.",
-        summary: "Custom strategy evaluation completed. Statistical metrics automatically evaluate probability outcomes across matching simulation profiles.",
+        notes: "Real-time calculation metric index compiled successfully. Analytics parameter checks show relevant baseline correlation logs.",
+        summary: "Custom user evaluation metrics processed securely. System trends analysis reports steady data profiles tracking this customized environment matrix.",
         checks: [
           { name: "Market Viability Verified", valid: mockPercent > 45 },
           { name: "Clear Risk Mitigation Strategy", valid: mockPercent > 65 },
@@ -422,22 +419,22 @@
       currentSelectedId = generatedProfile.id;
       input.value = '';
       refreshDashboardView();
-    }
+    };
 
-    function clearAndFocusInput() {
+    window.clearAndFocusInput = function() {
       const input = document.getElementById('queryInput');
       if (input) {
         input.value = '';
         input.focus();
       }
-    }
+    };
 
     function escapeCode(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Secure application lifecycle attachment loop hooks
-    function initAppMatrixEngine() {
+    // Secure App initialization entry hook
+    function bootstrapApp() {
       if (window.lucide && typeof window.lucide.createIcons === 'function') {
         window.lucide.createIcons();
       }
@@ -445,9 +442,9 @@
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initAppMatrixEngine);
+      document.addEventListener('DOMContentLoaded', bootstrapApp);
     } else {
-      initAppMatrixEngine();
+      bootstrapApp();
     }
   </script>
 </body>
