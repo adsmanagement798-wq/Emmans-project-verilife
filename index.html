@@ -1,474 +1,454 @@
-import { useState } from "react";
-import {
-  Shield, Star, Bell, Settings,
-  ChevronRight, Play, Sparkles, TrendingUp, Briefcase,
-  GraduationCap, DollarSign, CheckCircle2, ArrowRight,
-  MessageSquare, FileText, Eye, List, Crown, AlertTriangle,
-  Activity, Lock, Menu, X, LayoutDashboard, Globe
-} from "lucide-react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeriLife - Trust & Decision Intelligence</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-const G = {
-  primary:   "#16a34a",
-  dark:      "#0f172a",
-  mid:       "#1e293b",
-  card:      "#0f172a",
-};
+  <style>
+    /* Custom UI Scrollbar for mobile panels */
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    /* Smooth rotation transition for score indicator gauges */
+    .gauge-arc {
+      transition: stroke-dashoffset 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased select-none">
 
-const Badge = ({ children, className = "" }) => (
-  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${className}`}>
-    {children}
-  </span>
-);
-
-const GreenBtn = ({ children, onClick, className = "", small = false }) => (
-  <button
-    onClick={onClick}
-    className={`inline-flex items-center gap-2 font-semibold rounded-xl transition-all duration-200
-      bg-green-600 hover:bg-green-500 active:scale-95 text-white shadow-lg
-      ${small ? "px-4 py-2 text-sm" : "px-6 py-3 text-sm"}
-      ${className}`}
-  >
-    {children}
-  </button>
-);
-
-const GhostBtn = ({ children, onClick, className = "" }) => (
-  <button
-    onClick={onClick}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl
-      border border-slate-700 text-slate-200 hover:bg-slate-800 transition-all duration-200 ${className}`}
-  >
-    {children}
-  </button>
-);
-
-function LandingPage({ onEnter }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const navLinks = ["Features", "How It Works", "Use Cases", "Pricing", "Blog", "About Us"];
-  const stats = [
-    { label: "Analyses today", value: "12,458+" },
-    { label: "Avg accuracy", value: "94.2%" },
-    { label: "Active users", value: "38k+" },
-  ];
-  const features = [
-    { icon: <TrendingUp size={14} />, label: "Predictive Analytics" },
-    { icon: <Shield size={14} />, label: "Risk Mitigation" },
-    { icon: <Globe size={14} />, label: "Real-Time Data" },
-    { icon: <Star size={14} />, label: "Reputation Scores" },
-  ];
-  const proofCards = [
-    { q: "Dropshipping at 17?", pct: 42, status: "Risky", color: "text-orange-400", bg: "bg-orange-950/40 border-orange-800/40" },
-    { q: "Index Funds vs Crypto ($1k)", pct: 78, status: "Safe", color: "text-green-400", bg: "bg-green-950/40 border-green-800/40" },
-    { q: "Moving city for dev role", pct: 85, status: "Strong", color: "text-emerald-400", bg: "bg-emerald-950/40 border-emerald-800/40" },
-  ];
-
-  return (
-    <div className="min-h-screen text-slate-100 bg-slate-900" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <nav className="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-900/90 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
-              <Shield size={16} className="text-white" />
-            </div>
-            <span className="font-bold text-lg tracking-tight">VeriLife</span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map(l => <a key={l} href="#" className="text-sm text-slate-400 hover:text-slate-100 transition-colors">{l}</a>)}
-          </div>
-          <div className="hidden md:flex items-center gap-3">
-            <GhostBtn onClick={onEnter}>Log in</GhostBtn>
-            <GreenBtn onClick={onEnter}>Get Started</GreenBtn>
-          </div>
-          <button className="md:hidden text-slate-400" onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+  <div id="landingView" class="block min-h-screen bg-white">
+    <nav class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between border-b border-slate-100">
+      <button type="button" onclick="switchView('landing')" class="flex items-center space-x-3 text-left focus:outline-none">
+        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white font-bold text-base shadow-sm">
+          VL
         </div>
-        {mobileOpen && (
-          <div className="md:hidden px-5 pb-4 flex flex-col gap-2 border-t border-slate-800">
-            {navLinks.map(l => <a key={l} href="#" className="text-sm text-slate-300 py-1">{l}</a>)}
-            <GreenBtn onClick={onEnter} className="mt-2 justify-center">Get Started</GreenBtn>
-          </div>
-        )}
-      </nav>
+        <span class="text-lg font-bold tracking-tight text-slate-900">VeriLife</span>
+      </button>
 
-      <section className="relative overflow-hidden pt-16 pb-20 px-5">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-10"
-            style={{ background: "radial-gradient(circle, #16a34a 0%, transparent 70%)" }} />
+      <div class="flex items-center space-x-4">
+        <button type="button" onclick="switchView('dashboard')" class="text-xs font-bold bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition shadow-md shadow-emerald-600/10">
+          Get Started
+        </button>
+      </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 pt-16 pb-24 text-center space-y-8">
+      <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-[11px] font-semibold text-emerald-700 tracking-wide">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        <span>AI-POWERED TRUST & DECISION INTELLIGENCE</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-[1.15]">
+        Make Smarter Decisions.<br />
+        Live a <span class="text-emerald-600">Safer</span> Life.
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
+        VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
+      </p>
+
+      <div class="flex justify-center pt-4">
+        <button type="button" onclick="switchView('dashboard')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition">
+          <span>Start Free Analysis</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-12 max-w-3xl mx-auto">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+          <div class="text-xs font-bold text-slate-600">Predictive Analytics</div>
         </div>
-        <div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
-          <div className="flex-1 text-center lg:text-left">
-            <Badge className="mb-5 bg-green-950 text-green-400 border border-green-800/60">
-              <Sparkles size={11} /> AI-Powered Trust & Decision Intelligence
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight mb-5">
-              Make <span className="text-green-400">Smarter</span> Decisions.<br />
-              Live a <span className="text-green-400">Safer</span> Life.
-            </h1>
-            <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-7 max-w-lg mx-auto lg:mx-0">
-              VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
-            </p>
-            <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-8">
-              <GreenBtn onClick={onEnter} className="px-7 py-3.5 text-base">
-                Start Free Analysis <ArrowRight size={16} />
-              </GreenBtn>
-              <GhostBtn>
-                <Play size={13} fill="currentColor" /> Watch Demo
-              </GhostBtn>
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-              {features.map(f => (
-                <div key={f.label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-xs text-slate-300">
-                  <span className="text-green-400">{f.icon}</span>{f.label}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex-1 flex flex-col items-center gap-6">
-            <div className="relative">
-              <div className="w-60 rounded-[1.8rem] overflow-hidden border-2 border-slate-700 shadow-2xl bg-slate-800">
-                <div className="bg-slate-900 px-5 py-2.5 flex justify-between items-center text-[9px] text-slate-500">
-                  <span>9:41</span>
-                  <div className="w-16 h-3 rounded-full bg-slate-800" />
-                  <span>●●●</span>
-                </div>
-                <div className="px-4 py-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-5 h-5 rounded-md bg-green-600 flex items-center justify-center">
-                      <Shield size={10} className="text-white" />
-                    </div>
-                    <span className="text-[11px] font-bold">VeriLife</span>
-                  </div>
-                  <p className="text-[11px] font-bold text-white mb-0.5">Analyze Anything.</p>
-                  <p className="text-[11px] font-bold text-green-400 mb-3">Decide Everything.</p>
-                  <div className="rounded-xl bg-slate-900 border border-slate-700 p-2.5 mb-3">
-                    <p className="text-[9px] text-slate-400">How likely am I to succeed in dropshipping at 17?</p>
-                  </div>
-                  <div className="flex items-center justify-center py-2">
-                    <div className="relative w-14 h-14 flex items-center justify-center">
-                      <svg viewBox="0 0 56 56" className="absolute inset-0 w-full h-full -rotate-90">
-                        <circle cx="28" cy="28" r="22" fill="none" stroke="#1e293b" strokeWidth="5"/>
-                        <circle cx="28" cy="28" r="22" fill="none" stroke="#f97316" strokeWidth="5"
-                          strokeDasharray={`${2*Math.PI*22*0.42} ${2*Math.PI*22}`} strokeLinecap="round"/>
-                      </svg>
-                      <span className="text-xs font-bold text-white">42%</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center gap-1 rounded-full bg-orange-950 border border-orange-800/40 px-2 py-1">
-                    <AlertTriangle size={9} className="text-orange-400" />
-                    <span className="text-[9px] text-orange-400 font-semibold">Risky — Proceed with caution</span>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -right-2 top-8 bg-green-950 border border-green-700/50 rounded-2xl px-3 py-2.5 shadow-xl min-w-[148px]">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <CheckCircle2 size={10} className="text-green-400" />
-                  <span className="text-[9px] font-bold text-green-300">Trusted by thousands</span>
-                </div>
-                <p className="text-[9px] text-green-500">12,458+ analyses today</p>
-                <svg viewBox="0 0 80 18" className="w-full mt-1.5">
-                  <polyline points="0,14 15,10 30,12 45,6 60,8 80,2"
-                    fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <div className="absolute -left-2 bottom-14 bg-slate-800 border border-slate-700 rounded-2xl px-3 py-2 shadow-xl">
-                <div className="flex gap-0.5 mb-0.5">
-                  {[...Array(5)].map((_, i) => <Star key={i} size={9} fill="#facc15" className="text-yellow-400" />)}
-                </div>
-                <p className="text-[9px] font-bold text-slate-200">4.9 / 5.0</p>
-                <p className="text-[8px] text-slate-400">2,340 reviews</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              {stats.map(s => (
-                <div key={s.label} className="bg-slate-800/60 border border-slate-700/60 rounded-xl px-4 py-2.5 text-center">
-                  <p className="text-base font-extrabold text-green-400">{s.value}</p>
-                  <p className="text-[10px] text-slate-400">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+          <div class="text-xs font-bold text-slate-600">Risk Mitigation</div>
         </div>
-      </section>
-
-      <section className="py-12 px-5 border-t border-slate-800/60">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {proofCards.map(c => (
-            <div key={c.q} className={`rounded-2xl border p-5 ${c.bg}`}>
-              <div className="flex items-start justify-between mb-3">
-                <p className="text-sm font-medium text-slate-200 leading-snug max-w-[160px]">{c.q}</p>
-                <span className={`text-2xl font-extrabold ${c.color}`}>{c.pct}%</span>
-              </div>
-              <Badge className={`${c.bg} ${c.color} border border-slate-700/20`}>{c.status}</Badge>
-            </div>
-          ))}
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+          <div class="text-xs font-bold text-slate-600">Real-Time Data</div>
         </div>
-      </section>
-
-      <section className="py-16 px-5">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
-            Ready to make decisions <span className="text-green-400">backed by data</span>?
-          </h2>
-          <p className="text-slate-400 mb-7">Join thousands who use VeriLife to avoid costly mistakes and maximize life outcomes.</p>
-          <GreenBtn onClick={onEnter} className="px-8 py-4 text-base mx-auto">
-            Get Started Free <ArrowRight size={16} />
-          </GreenBtn>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-const sideNav = [
-  { icon: <LayoutDashboard size={16} />, label: "Decision Maker", active: true },
-  { icon: <CheckCircle2 size={16} />, label: "Verifications" },
-  { icon: <Eye size={16} />, label: "Scans" },
-  { icon: <List size={16} />, label: "Watchlist" },
-  { icon: <Shield size={16} />, label: "My Reputation" },
-  { icon: <MessageSquare size={16} />, label: "Messages", badge: 3 },
-  { icon: <FileText size={16} />, label: "Reports" },
-  { icon: <Settings size={16} />, label: "Settings" },
-];
-
-const analyses = [
-  { q: "How likely am I to make it in dropshipping at 17?", pct: 42, status: "Risky", color: "text-orange-400", dot: "bg-orange-400" },
-  { q: "Investing $1k into Index Funds vs Crypto", pct: 78, status: "Safe", color: "text-green-400", dot: "bg-green-400" },
-  { q: "Moving to a new city for a junior dev role", pct: 85, status: "High Probability", color: "text-emerald-400", dot: "bg-emerald-400" },
-  { q: "Starting a software agency with no capital", pct: 29, status: "Low Probability", color: "text-red-400", dot: "bg-red-400" },
-];
-
-const quickTabs = [
-  { icon: <Briefcase size={13} />, label: "Business" },
-  { icon: <TrendingUp size={13} />, label: "Investment" },
-  { icon: <GraduationCap size={13} />, label: "Career" },
-  { icon: <GraduationCap size={13} />, label: "Education" },
-  { icon: <DollarSign size={13} />, label: "Personal Finance" },
-];
-
-const checks = [
-  "Market Viability Verified",
-  "Clear Risk Mitigation Strategy",
-  "Low Financial Exposure",
-  "Positive Community Feedback",
-];
-
-function RadialGauge({ pct }) {
-  const r = 68;
-  const circ = 2 * Math.PI * r;
-  const arc  = circ * 0.75;
-  const fill = (pct / 100) * arc;
-  const color = pct >= 70 ? "#22c55e" : pct >= 45 ? "#f59e0b" : "#ef4444";
-  return (
-    <svg viewBox="0 0 180 130" className="w-40">
-      <circle cx="90" cy="105" r={r} fill="none" stroke="#1e293b" strokeWidth="12"
-        strokeDasharray={`${arc} ${circ}`} strokeLinecap="round" transform="rotate(-225 90 105)" />
-      <circle cx="90" cy="105" r={r} fill="none" stroke={color} strokeWidth="12"
-        strokeDasharray={`${fill} ${circ}`} strokeLinecap="round" transform="rotate(-225 90 105)"
-        style={{ transition: "stroke-dasharray 0.6s ease" }} />
-      <text x="90" y="102" textAnchor="middle" dominantBaseline="middle"
-        fill="white" style={{ fontSize: 26, fontWeight: 800 }}>{pct}</text>
-      <text x="90" y="118" textAnchor="middle" fill="#94a3b8" style={{ fontSize: 10 }}>/ 100</text>
-    </svg>
-  );
-}
-
-function Dashboard({ onBack }) {
-  const [active, setActive]       = useState(0);
-  const [query, setQuery]         = useState("");
-  const [activeTab, setActiveTab] = useState(0);
-  const [sideOpen, setSideOpen]   = useState(false);
-  const cur = analyses[active];
-
-  return (
-    <div className="flex h-screen overflow-hidden text-slate-100 bg-slate-950" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      {sideOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSideOpen(false)} />
-      )}
-
-      <aside className={`fixed md:relative inset-y-0 left-0 z-40 flex flex-col w-56 border-r border-slate-800/60 bg-slate-900 shrink-0
-        transition-transform duration-200 ${sideOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
-        <div className="h-14 flex items-center gap-2 px-4 border-b border-slate-800/60">
-          <div className="w-6 h-6 rounded-md bg-green-600 flex items-center justify-center">
-            <Shield size={13} className="text-white" />
-          </div>
-          <span className="font-bold text-sm tracking-tight">VeriLife</span>
-        </div>
-        <nav className="flex-1 px-2 py-3 flex flex-col gap-0.5 overflow-y-auto">
-          {sideNav.map(item => (
-            <button key={item.label}
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all w-full text-left
-                ${item.active ? "bg-green-950/60 text-green-400 border border-green-800/40" : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200"}`}>
-              {item.icon} {item.label}
-              {item.badge && (
-                <span className="ml-auto bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{item.badge}</span>
-              )}
-            </button>
-          ))}
-        </nav>
-        <div className="m-2 p-3 rounded-2xl bg-gradient-to-br from-green-950 to-slate-900 border border-green-800/40">
-          <Crown size={15} className="text-yellow-400 mb-1.5" />
-          <p className="text-xs font-bold text-slate-200 mb-0.5">Go Premium</p>
-          <p className="text-[10px] text-slate-400 mb-2.5">Unlock unlimited analyses & advanced risk models.</p>
-          <button className="w-full py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-[11px] font-semibold transition-colors">
-            Upgrade Now
-          </button>
-        </div>
-      </aside>
-
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <header className="h-14 flex items-center justify-between px-4 border-b border-slate-800/60 bg-slate-900 shrink-0">
-          <div className="flex items-center gap-3">
-            <button className="md:hidden text-slate-400" onClick={() => setSideOpen(true)}>
-              <Menu size={18} />
-            </button>
-            <div>
-              <h1 className="text-sm font-bold">Decision Maker</h1>
-              <p className="text-[10px] text-slate-400 hidden sm:block">AI-powered insights & real-time probability analysis</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <GreenBtn small>
-              <Sparkles size={12} /> <span className="hidden sm:inline">New Analysis</span>
-            </GreenBtn>
-            <div className="relative">
-              <Bell size={16} className="text-slate-400" />
-              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" />
-            </div>
-            <div className="flex items-center gap-1.5 pl-2 border-l border-slate-700">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-[9px] font-bold">D</div>
-              <div className="hidden sm:block">
-                <p className="text-[11px] font-semibold">David O.</p>
-                <p className="text-[9px] text-green-400 font-medium">Premium</p>
-              </div>
-            </div>
-            <button onClick={onBack} className="text-slate-500 hover:text-slate-300 transition-colors" title="Back to landing">
-              <X size={15} />
-            </button>
-          </div>
-        </header>
-
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-          <div className="rounded-2xl border border-slate-800 p-4 bg-slate-800/50">
-            <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-3 font-semibold">What do you want to analyze today?</p>
-            <div className="flex gap-2 items-center rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2.5 mb-3 focus-within:border-green-600 transition-colors">
-              <input value={query} onChange={e => setQuery(e.target.value)}
-                placeholder="Ask a question or describe a scenario… (e.g., 'How likely are you to make it in drop shipping at 17?')"
-                className="flex-1 bg-transparent text-xs text-slate-200 placeholder-slate-500 outline-none min-w-0" />
-              <button className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold transition-colors">
-                <Sparkles size={11} /> Analyze
-              </button>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {quickTabs.map((t, i) => (
-                <button key={t.label} onClick={() => setActiveTab(i)}
-                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all
-                    ${activeTab === i ? "bg-green-600 text-white" : "bg-slate-800 text-slate-400 hover:bg-slate-700"}`}>
-                  {t.icon} {t.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="rounded-2xl border border-slate-800 p-3 bg-slate-800/50 flex flex-col gap-1">
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-2 font-semibold px-1">Recent Analyses</p>
-              {analyses.map((a, i) => (
-                <button key={i} onClick={() => setActive(i)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all duration-150
-                    ${active === i ? "border-green-700/60 bg-green-950/30" : "border-transparent hover:bg-slate-800/60"}`}>
-                  <p className="text-xs text-slate-200 font-medium leading-snug mb-2">{a.q}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className={`w-1.5 h-1.5 rounded-full ${a.dot}`} />
-                      <span className={`text-[10px] font-semibold ${a.color}`}>{a.status}</span>
-                    </div>
-                    <span className={`text-sm font-extrabold ${a.color}`}>{a.pct}%</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 p-4 bg-slate-800/50 flex flex-col items-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-3 font-semibold self-start">Success Score</p>
-              <RadialGauge pct={cur.pct} />
-              <Badge className={`mt-1 mb-3 border text-[10px] ${
-                cur.pct >= 70 ? "bg-green-950 text-green-400 border-green-800/40" :
-                cur.pct >= 45 ? "bg-orange-950 text-orange-400 border-orange-800/40" :
-                "bg-red-950 text-red-400 border-red-800/40"}`}>
-                {cur.status}
-              </Badge>
-              <p className="text-[11px] text-slate-400 text-center leading-relaxed mb-4">
-                {cur.pct >= 70
-                  ? "Real-time data suggests a strong baseline for success if managed correctly. Keep it up!"
-                  : cur.pct >= 45
-                  ? "Moderate risk detected. Mitigate key exposure points before committing."
-                  : "High risk profile. Current data doesn't support a confident outcome. Review strategy."}
-              </p>
-              <button className="mt-auto w-full py-2 rounded-xl border border-green-700/50 text-green-400 text-xs font-semibold hover:bg-green-950/40 transition-colors flex items-center justify-center gap-1.5">
-                View Detailed Data Points <ChevronRight size={12} />
-              </button>
-            </div>
-
-            <div className="rounded-2xl border border-slate-800 p-4 bg-slate-800/50 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">AI Recommendation</p>
-                <div className="w-6 h-6 rounded-lg bg-green-600 flex items-center justify-center">
-                  <Shield size={12} className="text-white" />
-                </div>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                Based on our analysis of current market trends, demographic data, and historical success rates, this path shows{" "}
-                <span className="text-green-400 font-semibold">
-                  {cur.pct >= 70 ? "strong potential" : cur.pct >= 45 ? "moderate potential" : "limited potential"}
-                </span>{" "}
-                but carries {cur.pct >= 70 ? "minor" : "notable"} risks that require attention.
-              </p>
-              <div className="flex flex-col gap-2 mb-4">
-                {checks.map((c, i) => {
-                  const ok = cur.pct >= 70 || (cur.pct >= 45 && i < 2) || (cur.pct < 45 && i === 0);
-                  return (
-                    <div key={c} className="flex items-center gap-2">
-                      <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-green-600" : "bg-slate-700"}`}>
-                        {ok ? <CheckCircle2 size={10} className="text-white" /> : <X size={9} className="text-slate-400" />}
-                      </div>
-                      <span className={`text-[11px] font-medium ${ok ? "text-slate-200" : "text-slate-500"}`}>{c}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mt-auto rounded-xl bg-slate-900/60 border border-slate-700/60 p-2.5 flex items-center gap-2">
-                <Activity size={12} className="text-green-400 shrink-0" />
-                <span className="text-[10px] text-slate-300 font-medium">Live data — updated just now</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-green-800/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
-            style={{ background: "linear-gradient(135deg, #052e16 0%, #0f172a 100%)" }}>
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-green-600/20 border border-green-700/40 flex items-center justify-center shrink-0">
-                <Lock size={16} className="text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-slate-100">Stay protected. Stay informed. Stay ahead.</p>
-                <p className="text-xs text-slate-400">Get notified when your scenario's probability shifts by more than 10%.</p>
-              </div>
-            </div>
-            <GreenBtn small className="shrink-0">
-              Enable Continuous Tracking <ChevronRight size={12} />
-            </GreenBtn>
-          </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+          <div class="text-xs font-bold text-slate-600">Reputation Scores</div>
         </div>
       </div>
     </div>
-  );
-}
+  </div>
 
-export default function VeriLifeApp() {
-  const [view, setView] = useState("landing");
-  return view === "landing"
-    ? <LandingPage onEnter={() => setView("dashboard")} />
-    : <Dashboard onBack={() => setView("landing")} />;
-}
+
+  <div id="dashboardView" class="hidden min-h-screen bg-[#f8fafc] flex flex-col">
+    <header class="h-20 border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between bg-white shrink-0 sticky top-0 z-50">
+      <div>
+        <h2 class="text-sm font-extrabold text-slate-900 tracking-wide uppercase">Decision Maker</h2>
+        <p class="text-[11px] text-slate-500">AI-powered insights & probability analysis</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button type="button" onclick="clearAndFocusInput()" class="inline-flex items-center space-x-1.5 bg-emerald-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold hover:bg-emerald-700 transition">
+          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+          <span>New</span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold border border-emerald-200 text-emerald-800">D</div>
+        <button type="button" onclick="switchView('landing')" class="p-2 text-slate-400 hover:text-slate-600 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="flex-1 max-w-md mx-auto w-full p-4 space-y-4 overflow-y-auto pb-12">
+      
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 space-y-4 shadow-sm">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">What do you want to analyze today?</label>
+        
+        <div class="relative flex items-center">
+          <input 
+            id="queryInput"
+            type="text" 
+            placeholder="Ask a question or describe a scenario..." 
+            class="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl py-3 pl-4 pr-24 text-xs text-slate-900 placeholder-slate-400 outline-none transition focus:ring-1 focus:ring-emerald-500"
+          />
+          <button type="button" onclick="triggerAnalysis()" class="absolute right-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-black flex items-center space-x-1 hover:bg-emerald-700 transition">
+            <i data-lucide="sparkles" class="w-3 h-3"></i>
+            <span>Analyze</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" class="px-2 py-2 rounded-xl text-[11px] font-bold bg-emerald-600 text-white inline-flex items-center justify-center space-x-1"><i data-lucide="briefcase" class="w-3 h-3"></i><span>Business</span></button>
+          <button type="button" class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1"><i data-lucide="trending-up" class="w-3 h-3"></i><span>Investment</span></button>
+          <button type="button" class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1"><i data-lucide="award" class="w-3 h-3"></i><span>Career</span></button>
+          <button type="button" class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1"><i data-lucide="book-open" class="w-3 h-3"></i><span>Education</span></button>
+          <button type="button" class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1" style="grid-column: span 2;"><i data-lucide="dollar-sign" class="w-3 h-3"></i><span>Personal Finance</span></button>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recent Analyses</h3>
+        <div id="recentsWrapper" class="space-y-2 max-h-[220px] overflow-y-auto custom-scroll pr-0.5">
+          </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm text-center flex flex-col items-center justify-center space-y-4">
+        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Success Score</h3>
+        
+        <div class="relative flex items-center justify-center">
+          <svg class="w-32 h-32 transform -rotate-90">
+            <circle cx="64" cy="64" r="46" stroke="#f1f5f9" stroke-width="8" fill="transparent" stroke-dasharray="289" stroke-linecap="round"/>
+            <circle 
+              id="metricArc"
+              cx="64" cy="64" r="46"
+              stroke="#eab308"
+              stroke-width="8" fill="transparent"
+              stroke-linecap="round"
+              class="gauge-arc"
+            />
+          </svg>
+          <div class="absolute flex flex-col items-center justify-center">
+            <div class="flex items-baseline justify-center">
+              <span id="scoreVal" class="text-3xl font-black text-slate-900 tracking-tight">0</span>
+              <span class="text-[10px] text-slate-400 font-bold ml-0.5">/100</span>
+            </div>
+            <span id="labelBadge" class="mt-0.5 text-[9px] px-2 py-0.5 font-bold rounded-md bg-amber-50 text-amber-700 border border-amber-200">Risky</span>
+          </div>
+        </div>
+
+        <p id="contextNotes" class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+          Evaluating strategy configurations...
+        </p>
+
+        <button type="button" class="w-full bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs flex items-center justify-center space-x-1 transition">
+          <span>View Detailed Data Points</span>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Recommendation</h3>
+        </div>
+
+        <p id="recParagraph" class="text-xs text-slate-600 leading-relaxed bg-slate-50 border border-slate-100 p-3 rounded-xl">
+          Select or add an item to view tracking records data summaries.
+        </p>
+
+        <div id="checklistsGrid" class="space-y-2.5 pt-1 border-t border-slate-100">
+          </div>
+
+        <div class="flex items-center justify-center space-x-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 py-2 rounded-xl text-[10px] font-bold">
+          <i data-lucide="activity" class="w-3.5 h-3.5 animate-pulse"></i>
+          <span>Live data — updated just now</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+        <div class="flex items-start space-x-3">
+          <div class="p-2 bg-slate-800 rounded-xl text-emerald-400 shrink-0">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+          </div>
+          <div class="space-y-0.5">
+            <h4 class="text-xs font-bold text-white">Stay protected. Stay informed.</h4>
+            <p class="text-[10px] text-slate-400 leading-normal">Get notified when your scenario's probability metrics shift by more than 10%.</p>
+          </div>
+        </div>
+        <button type="button" class="w-full py-2.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs shadow-sm hover:bg-emerald-400 transition">
+          Enable Continuous Tracking
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+    // State Tracking Data Matrix Configuration Models 
+    let analysesDataset = [
+      {
+        id: 1,
+        question: "How likely am I to make it in dropshipping at 17?",
+        status: "Risky",
+        themeClass: "text-amber-700 bg-amber-50 border-amber-200",
+        strokeColor: "#eab308",
+        percentage: 42,
+        notes: "High risk profile. Current data does not support a high-confidence outcome. Review strategy setup configurations.",
+        summary: "Based on our analysis of current market trends, demographic data, and historical failure/success rates, this path shows limited potential but carries specific notable risks that require attention.",
+        checks: [
+          { name: "Market Viability Verified", valid: true },
+          { name: "Clear Risk Mitigation Strategy", valid: false },
+          { name: "Low Financial Exposure", valid: false },
+          { name: "Positive Community Feedback", valid: true }
+        ]
+      },
+      {
+        id: 2,
+        question: "Investing $1k into Index Funds vs Crypto",
+        status: "Safe",
+        themeClass: "text-emerald-700 bg-emerald-50 border-emerald-200",
+        strokeColor: "#10b981",
+        percentage: 78,
+        notes: "Balanced and stable accumulation configuration score. Strongly verified tracking variables present lower threshold deviation patterns.",
+        summary: "Data indicates strong underlying stability with index fund baselines compensating for crypto volatility. Recommended allocation favors high-probability risk-managed wealth accumulation variables.",
+        checks: [
+          { name: "Market Viability Verified", valid: true },
+          { name: "Clear Risk Mitigation Strategy", valid: true },
+          { name: "Low Financial Exposure", valid: true },
+          { name: "Positive Community Feedback", valid: false }
+        ]
+      },
+      {
+        id: 3,
+        question: "Moving to a new city for a junior dev role",
+        status: "High Probability",
+        themeClass: "text-blue-700 bg-blue-50 border-blue-200",
+        strokeColor: "#3b82f6",
+        percentage: 85,
+        notes: "Excellent strategic growth indicators identified. Relocation friction is completely mitigated by rapid compounding local career returns.",
+        summary: "Macroeconomic indicators show rapid tech ecosystem expansion in the target destination. Career compounding metrics heavily outweigh short-term relocation friction elements.",
+        checks: [
+          { name: "Market Viability Verified", valid: true },
+          { name: "Clear Risk Mitigation Strategy", valid: true },
+          { name: "Low Financial Exposure", valid: false },
+          { name: "Positive Community Feedback", valid: true }
+        ]
+      },
+      {
+        id: 4,
+        question: "Starting a software agency with no capital",
+        status: "Low Probability",
+        themeClass: "text-rose-700 bg-rose-50 border-rose-200",
+        strokeColor: "#f43f5e",
+        percentage: 29,
+        notes: "Severe initial customer pipeline restrictions present high operational friction. Recommended approach requires pre-revenue client commitment.",
+        summary: "High market saturation and long organic pipeline delays generate severe initial cashflow strain. Real-time patterns suggest securing an initial anchor client prior to full operational scaling models.",
+        checks: [
+          { name: "Market Viability Verified", valid: false },
+          { name: "Clear Risk Mitigation Strategy", valid: false },
+          { name: "Low Financial Exposure", valid: true },
+          { name: "Positive Community Feedback", valid: false }
+        ]
+      }
+    ];
+
+    let currentSelectedId = 1;
+
+    // Layout view state transitions router switches
+    function switchView(viewKey) {
+      const landing = document.getElementById('landingView');
+      const dashboard = document.getElementById('dashboardView');
+      
+      if (viewKey === 'landing') {
+        landing.style.display = 'block';
+        dashboard.style.display = 'none';
+      } else {
+        landing.style.display = 'none';
+        dashboard.style.display = 'flex';
+        refreshDashboardView();
+      }
+    }
+
+    // Refresh Dashboard Data Bindings Matrix Models Fields View Update 
+    function refreshDashboardView() {
+      const recentsContainer = document.getElementById('recentsWrapper');
+      if (!recentsContainer) return;
+      
+      recentsContainer.innerHTML = '';
+      const currentItem = analysesDataset.find(item => item.id === currentSelectedId) || analysesDataset[0];
+
+      // Compiling list row elements metrics items fields records labels
+      analysesDataset.forEach(data => {
+        const isActive = data.id === currentSelectedId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        
+        // Mobile tap touch interaction handling 
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          currentSelectedId = data.id;
+          refreshDashboardView();
+        });
+
+        btn.className = `w-full p-3.5 rounded-xl border text-left transition flex justify-between items-center ${
+          isActive ? 'bg-slate-50 border-emerald-500 ring-1 ring-emerald-500/10' : 'bg-white border-slate-100 hover:bg-slate-50'
+        }`;
+
+        btn.innerHTML = `
+          <div class="space-y-1 max-w-[80%] pointer-events-none">
+            <p class="text-xs font-bold text-slate-800 line-clamp-1">${escapeCode(data.question)}</p>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-1.5 h-1.5 rounded-full ${data.percentage > 50 ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
+              <span class="text-[10px] font-bold text-slate-500">${data.status}</span>
+            </div>
+          </div>
+          <span class="text-xs font-black ${isActive ? 'text-emerald-600' : 'text-slate-400'} pointer-events-none">${data.percentage}%</span>
+        `;
+        recentsContainer.appendChild(btn);
+      });
+
+      // Gauge Circle Arc properties offset calculations 
+      const radius = 46;
+      const circumference = 2 * Math.PI * radius; // 289
+      const scoreOffset = circumference - (currentItem.percentage / 100) * circumference;
+      
+      const targetCircle = document.getElementById('metricArc');
+      if (targetCircle) {
+        targetCircle.setAttribute('stroke', currentItem.strokeColor);
+        targetCircle.setAttribute('stroke-dasharray', circumference);
+        targetCircle.setAttribute('stroke-dashoffset', scoreOffset);
+      }
+
+      document.getElementById('scoreVal').innerText = currentItem.percentage;
+      
+      const badge = document.getElementById('labelBadge');
+      if (badge) {
+        badge.innerText = currentItem.status;
+        badge.className = `mt-0.5 text-[9px] px-2 py-0.5 font-bold rounded-md border ${currentItem.themeClass}`;
+      }
+
+      document.getElementById('contextNotes').innerText = currentItem.notes;
+      document.getElementById('recParagraph').innerText = currentItem.summary;
+
+      // Rendering checklist list item entries 
+      const gridChecks = document.getElementById('checklistsGrid');
+      if (gridChecks) {
+        gridChecks.innerHTML = '';
+        currentItem.checks.forEach(check => {
+          const itemRow = document.createElement('div');
+          itemRow.className = 'flex items-center justify-between text-xs py-1';
+          itemRow.innerHTML = `
+            <div class="flex items-center space-x-2.5 text-slate-600">
+              <div class="w-4 h-4 rounded-full flex items-center justify-center border ${check.valid ? 'border-emerald-200 bg-emerald-50 text-emerald-600' : 'border-slate-200 bg-slate-50 text-slate-400'}">
+                <i data-lucide="${check.valid ? 'check' : 'x'}" class="w-2.5 h-2.5"></i>
+              </div>
+              <span class="font-medium text-slate-700">${check.name}</span>
+            </div>
+          `;
+          gridChecks.appendChild(itemRow);
+        });
+      }
+
+      // Re-initialize Lucide icon graphics layers
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+
+    // Input text evaluation logic handler execution engine parameters mapping data entry 
+    function triggerAnalysis() {
+      const input = document.getElementById('queryInput');
+      if (!input) return;
+      const textVal = input.value.trim();
+      if (!textVal) return;
+
+      const mockPercent = Math.floor(Math.random() * (92 - 25 + 1)) + 25;
+      let status = "Moderate Risk";
+      let themeClass = "text-amber-700 bg-amber-50 border-amber-200";
+      let strokeColor = "#eab308";
+
+      if (mockPercent < 46) {
+        status = "Risky";
+        themeClass = "text-rose-700 bg-rose-50 border-rose-200";
+        strokeColor = "#f43f5e";
+      } else if (mockPercent > 75) {
+        status = "High Stability";
+        themeClass = "text-emerald-700 bg-emerald-50 border-emerald-200";
+        strokeColor = "#10b981";
+      }
+
+      const generatedProfile = {
+        id: Date.now(),
+        question: textVal,
+        status,
+        themeClass,
+        strokeColor,
+        percentage: mockPercent,
+        notes: "Real-time verification calculations successfully loaded matching parameters index records.",
+        summary: "Custom strategy evaluation completed. Statistical metrics automatically evaluate probability outcomes across matching simulation profiles.",
+        checks: [
+          { name: "Market Viability Verified", valid: mockPercent > 45 },
+          { name: "Clear Risk Mitigation Strategy", valid: mockPercent > 65 },
+          { name: "Low Financial Exposure", valid: true },
+          { name: "Positive Community Feedback", valid: mockPercent > 50 }
+        ]
+      };
+
+      analysesDataset.unshift(generatedProfile);
+      currentSelectedId = generatedProfile.id;
+      input.value = '';
+      refreshDashboardView();
+    }
+
+    function clearAndFocusInput() {
+      const input = document.getElementById('queryInput');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function escapeCode(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Secure application lifecycle attachment loop hooks
+    function initAppMatrixEngine() {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+      refreshDashboardView();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAppMatrixEngine);
+    } else {
+      initAppMatrixEngine();
+    }
+  </script>
+</body>
+</html>
