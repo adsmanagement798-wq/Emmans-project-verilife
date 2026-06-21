@@ -1,28 +1,19 @@
 import { useState } from "react";
 import {
-  Shield, BarChart2, Globe, Zap, Star, Bell, Settings,
+  Shield, Star, Bell, Settings,
   ChevronRight, Play, Sparkles, TrendingUp, Briefcase,
-  GraduationCap, DollarSign, User, CheckCircle2, ArrowRight,
+  GraduationCap, DollarSign, CheckCircle2, ArrowRight,
   MessageSquare, FileText, Eye, List, Crown, AlertTriangle,
-  Activity, Lock, ChevronUp, Menu, X, LayoutDashboard
+  Activity, Lock, Menu, X, LayoutDashboard, Globe
 } from "lucide-react";
 
-/* ─── COLOUR & STYLE TOKENS ───────────────────────────────────────── */
 const G = {
-  primary:   "#16a34a",   // green-600
-  primaryLt: "#dcfce7",   // green-100
-  primaryDk: "#14532d",   // green-900
-  accent:    "#22c55e",   // green-500
-  dark:      "#0f172a",   // slate-900
-  mid:       "#1e293b",   // slate-800
-  muted:     "#334155",   // slate-700
-  text:      "#f8fafc",   // slate-50
-  subtext:   "#94a3b8",   // slate-400
-  panel:     "#1e293b",
+  primary:   "#16a34a",
+  dark:      "#0f172a",
+  mid:       "#1e293b",
   card:      "#0f172a",
 };
 
-/* ─── SHARED MINI COMPONENTS ──────────────────────────────────────── */
 const Badge = ({ children, className = "" }) => (
   <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${className}`}>
     {children}
@@ -33,7 +24,7 @@ const GreenBtn = ({ children, onClick, className = "", small = false }) => (
   <button
     onClick={onClick}
     className={`inline-flex items-center gap-2 font-semibold rounded-xl transition-all duration-200
-      bg-green-600 hover:bg-green-500 active:scale-95 text-white shadow-lg shadow-green-900/30
+      bg-green-600 hover:bg-green-500 active:scale-95 text-white shadow-lg
       ${small ? "px-4 py-2 text-sm" : "px-6 py-3 text-sm"}
       ${className}`}
   >
@@ -45,43 +36,35 @@ const GhostBtn = ({ children, onClick, className = "" }) => (
   <button
     onClick={onClick}
     className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl
-      border border-slate-700 text-slate-200 hover:bg-slate-800 transition-all duration-200
-      ${className}`}
+      border border-slate-700 text-slate-200 hover:bg-slate-800 transition-all duration-200 ${className}`}
   >
     {children}
   </button>
 );
 
-/* ─── LANDING PAGE ────────────────────────────────────────────────── */
 function LandingPage({ onEnter }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const navLinks = ["Features", "How It Works", "Use Cases", "Pricing", "Blog", "About Us"];
-
   const stats = [
     { label: "Analyses today", value: "12,458+" },
     { label: "Avg accuracy", value: "94.2%" },
     { label: "Active users", value: "38k+" },
   ];
-
   const features = [
-    { icon: <TrendingUp size={15} />, label: "Predictive Analytics" },
-    { icon: <Shield size={15} />, label: "Risk Mitigation" },
-    { icon: <Globe size={15} />, label: "Real-Time Data" },
-    { icon: <Star size={15} />, label: "Reputation Scores" },
+    { icon: <TrendingUp size={14} />, label: "Predictive Analytics" },
+    { icon: <Shield size={14} />, label: "Risk Mitigation" },
+    { icon: <Globe size={14} />, label: "Real-Time Data" },
+    { icon: <Star size={14} />, label: "Reputation Scores" },
   ];
-
-  const recentCards = [
+  const proofCards = [
     { q: "Dropshipping at 17?", pct: 42, status: "Risky", color: "text-orange-400", bg: "bg-orange-950/40 border-orange-800/40" },
     { q: "Index Funds vs Crypto ($1k)", pct: 78, status: "Safe", color: "text-green-400", bg: "bg-green-950/40 border-green-800/40" },
-    { q: "Moving to new city for dev role", pct: 85, status: "Strong", color: "text-emerald-400", bg: "bg-emerald-950/40 border-emerald-800/40" },
+    { q: "Moving city for dev role", pct: 85, status: "Strong", color: "text-emerald-400", bg: "bg-emerald-950/40 border-emerald-800/40" },
   ];
 
   return (
-    <div className="min-h-screen text-slate-100" style={{ background: G.dark, fontFamily: "'Inter', system-ui, sans-serif" }}>
-
-      {/* NAV */}
-      <nav className="sticky top-0 z-50 border-b border-slate-800/60 backdrop-blur-xl" style={{ background: "rgba(15,23,42,0.85)" }}>
+    <div className="min-h-screen text-slate-100 bg-slate-900" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <nav className="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-900/90 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
@@ -89,183 +72,147 @@ function LandingPage({ onEnter }) {
             </div>
             <span className="font-bold text-lg tracking-tight">VeriLife</span>
           </div>
-
           <div className="hidden md:flex items-center gap-6">
-            {navLinks.map(l => (
-              <a key={l} href="#" className="text-sm text-slate-400 hover:text-slate-100 transition-colors">{l}</a>
-            ))}
+            {navLinks.map(l => <a key={l} href="#" className="text-sm text-slate-400 hover:text-slate-100 transition-colors">{l}</a>)}
           </div>
-
           <div className="hidden md:flex items-center gap-3">
             <GhostBtn onClick={onEnter}>Log in</GhostBtn>
             <GreenBtn onClick={onEnter}>Get Started</GreenBtn>
           </div>
-
           <button className="md:hidden text-slate-400" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
         {mobileOpen && (
-          <div className="md:hidden px-5 pb-5 flex flex-col gap-3 border-t border-slate-800">
+          <div className="md:hidden px-5 pb-4 flex flex-col gap-2 border-t border-slate-800">
             {navLinks.map(l => <a key={l} href="#" className="text-sm text-slate-300 py-1">{l}</a>)}
-            <GreenBtn onClick={onEnter} className="w-full justify-center mt-2">Get Started</GreenBtn>
+            <GreenBtn onClick={onEnter} className="mt-2 justify-center">Get Started</GreenBtn>
           </div>
         )}
       </nav>
 
-      {/* HERO */}
-      <section className="relative overflow-hidden pt-20 pb-24 px-5">
-        {/* ambient glow */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full opacity-10"
+      <section className="relative overflow-hidden pt-16 pb-20 px-5">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-10"
             style={{ background: "radial-gradient(circle, #16a34a 0%, transparent 70%)" }} />
         </div>
+        <div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+          <div className="flex-1 text-center lg:text-left">
+            <Badge className="mb-5 bg-green-950 text-green-400 border border-green-800/60">
+              <Sparkles size={11} /> AI-Powered Trust & Decision Intelligence
+            </Badge>
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.1] tracking-tight mb-5">
+              Make <span className="text-green-400">Smarter</span> Decisions.<br />
+              Live a <span className="text-green-400">Safer</span> Life.
+            </h1>
+            <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-7 max-w-lg mx-auto lg:mx-0">
+              VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
+            </p>
+            <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-8">
+              <GreenBtn onClick={onEnter} className="px-7 py-3.5 text-base">
+                Start Free Analysis <ArrowRight size={16} />
+              </GreenBtn>
+              <GhostBtn>
+                <Play size={13} fill="currentColor" /> Watch Demo
+              </GhostBtn>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+              {features.map(f => (
+                <div key={f.label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-xs text-slate-300">
+                  <span className="text-green-400">{f.icon}</span>{f.label}
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <div className="relative max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            {/* LEFT */}
-            <div className="flex-1 text-center lg:text-left">
-              <Badge className="mb-6 bg-green-950 text-green-400 border border-green-800/60">
-                <Sparkles size={12} /> AI-Powered Trust & Decision Intelligence
-              </Badge>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6">
-                Make <span className="text-green-400">Smarter</span> Decisions.<br />
-                Live a <span className="text-green-400">Safer</span> Life.
-              </h1>
-
-              <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
-                VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
-              </p>
-
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-10">
-                <GreenBtn onClick={onEnter} className="text-base px-7 py-3.5">
-                  Start Free Analysis <ArrowRight size={16} />
-                </GreenBtn>
-                <GhostBtn>
-                  <Play size={14} fill="currentColor" /> Watch Demo
-                </GhostBtn>
-              </div>
-
-              {/* Feature pills */}
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-                {features.map(f => (
-                  <div key={f.label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-xs text-slate-300">
-                    <span className="text-green-400">{f.icon}</span>
-                    {f.label}
+          <div className="flex-1 flex flex-col items-center gap-6">
+            <div className="relative">
+              <div className="w-60 rounded-[1.8rem] overflow-hidden border-2 border-slate-700 shadow-2xl bg-slate-800">
+                <div className="bg-slate-900 px-5 py-2.5 flex justify-between items-center text-[9px] text-slate-500">
+                  <span>9:41</span>
+                  <div className="w-16 h-3 rounded-full bg-slate-800" />
+                  <span>●●●</span>
+                </div>
+                <div className="px-4 py-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-5 h-5 rounded-md bg-green-600 flex items-center justify-center">
+                      <Shield size={10} className="text-white" />
+                    </div>
+                    <span className="text-[11px] font-bold">VeriLife</span>
                   </div>
-                ))}
+                  <p className="text-[11px] font-bold text-white mb-0.5">Analyze Anything.</p>
+                  <p className="text-[11px] font-bold text-green-400 mb-3">Decide Everything.</p>
+                  <div className="rounded-xl bg-slate-900 border border-slate-700 p-2.5 mb-3">
+                    <p className="text-[9px] text-slate-400">How likely am I to succeed in dropshipping at 17?</p>
+                  </div>
+                  <div className="flex items-center justify-center py-2">
+                    <div className="relative w-14 h-14 flex items-center justify-center">
+                      <svg viewBox="0 0 56 56" className="absolute inset-0 w-full h-full -rotate-90">
+                        <circle cx="28" cy="28" r="22" fill="none" stroke="#1e293b" strokeWidth="5"/>
+                        <circle cx="28" cy="28" r="22" fill="none" stroke="#f97316" strokeWidth="5"
+                          strokeDasharray={`${2*Math.PI*22*0.42} ${2*Math.PI*22}`} strokeLinecap="round"/>
+                      </svg>
+                      <span className="text-xs font-bold text-white">42%</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-1 rounded-full bg-orange-950 border border-orange-800/40 px-2 py-1">
+                    <AlertTriangle size={9} className="text-orange-400" />
+                    <span className="text-[9px] text-orange-400 font-semibold">Risky — Proceed with caution</span>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -right-2 top-8 bg-green-950 border border-green-700/50 rounded-2xl px-3 py-2.5 shadow-xl min-w-[148px]">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <CheckCircle2 size={10} className="text-green-400" />
+                  <span className="text-[9px] font-bold text-green-300">Trusted by thousands</span>
+                </div>
+                <p className="text-[9px] text-green-500">12,458+ analyses today</p>
+                <svg viewBox="0 0 80 18" className="w-full mt-1.5">
+                  <polyline points="0,14 15,10 30,12 45,6 60,8 80,2"
+                    fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div className="absolute -left-2 bottom-14 bg-slate-800 border border-slate-700 rounded-2xl px-3 py-2 shadow-xl">
+                <div className="flex gap-0.5 mb-0.5">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={9} fill="#facc15" className="text-yellow-400" />)}
+                </div>
+                <p className="text-[9px] font-bold text-slate-200">4.9 / 5.0</p>
+                <p className="text-[8px] text-slate-400">2,340 reviews</p>
               </div>
             </div>
-
-            {/* RIGHT: mock phone + cards */}
-            <div className="flex-1 flex flex-col items-center gap-5">
-              {/* Phone mockup */}
-              <div className="relative">
-                <div className="w-64 rounded-[2rem] overflow-hidden border-2 border-slate-700 shadow-2xl"
-                  style={{ background: G.mid }}>
-                  {/* status bar */}
-                  <div className="bg-slate-900 px-5 py-3 flex justify-between items-center text-[10px] text-slate-500">
-                    <span>9:41</span>
-                    <div className="w-20 h-4 rounded-full bg-slate-800" />
-                    <span>●●●</span>
-                  </div>
-                  <div className="px-4 py-5">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-6 h-6 rounded-md bg-green-600 flex items-center justify-center">
-                        <Shield size={12} className="text-white" />
-                      </div>
-                      <span className="text-xs font-bold text-slate-200">VeriLife</span>
-                    </div>
-                    <p className="text-[11px] font-bold text-white mb-1">Analyze Anything.</p>
-                    <p className="text-[11px] font-bold text-green-400 mb-4">Decide Everything.</p>
-                    <div className="rounded-xl bg-slate-900 border border-slate-700 p-3 mb-3">
-                      <p className="text-[10px] text-slate-400 leading-relaxed">How likely am I to succeed in dropshipping at 17?</p>
-                    </div>
-                    {/* score ring mock */}
-                    <div className="flex items-center justify-center py-3">
-                      <div className="relative w-16 h-16 flex items-center justify-center">
-                        <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full -rotate-90">
-                          <circle cx="32" cy="32" r="26" fill="none" stroke="#1e293b" strokeWidth="6"/>
-                          <circle cx="32" cy="32" r="26" fill="none" stroke="#16a34a" strokeWidth="6"
-                            strokeDasharray={`${2 * Math.PI * 26 * 0.42} ${2 * Math.PI * 26}`} strokeLinecap="round"/>
-                        </svg>
-                        <span className="text-sm font-bold text-white">42%</span>
-                      </div>
-                    </div>
-                    <Badge className="w-full justify-center bg-orange-950 text-orange-400 text-[10px] border border-orange-800/40">
-                      <AlertTriangle size={10} /> Risky — Proceed with caution
-                    </Badge>
-                  </div>
+            <div className="flex gap-3">
+              {stats.map(s => (
+                <div key={s.label} className="bg-slate-800/60 border border-slate-700/60 rounded-xl px-4 py-2.5 text-center">
+                  <p className="text-base font-extrabold text-green-400">{s.value}</p>
+                  <p className="text-[10px] text-slate-400">{s.label}</p>
                 </div>
-
-                {/* floating trust badge */}
-                <div className="absolute -right-4 top-10 bg-green-950 border border-green-700/50 rounded-2xl px-4 py-3 shadow-xl min-w-[160px]">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
-                      <CheckCircle2 size={11} className="text-white" />
-                    </div>
-                    <span className="text-[10px] font-bold text-green-300">Trusted by thousands</span>
-                  </div>
-                  <p className="text-[10px] text-green-500">12,458+ analyses today</p>
-                  {/* mini sparkline */}
-                  <svg viewBox="0 0 80 20" className="w-full mt-2">
-                    <polyline points="0,16 15,12 30,14 45,8 60,10 80,4"
-                      fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                </div>
-
-                {/* floating rating */}
-                <div className="absolute -left-4 bottom-16 bg-slate-800 border border-slate-700 rounded-2xl px-3 py-2 shadow-xl">
-                  <div className="flex gap-0.5 mb-1">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={10} className="text-yellow-400" fill="#facc15" />)}
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-200">4.9 / 5.0</p>
-                  <p className="text-[9px] text-slate-400">2,340 reviews</p>
-                </div>
-              </div>
-
-              {/* Stats row */}
-              <div className="flex gap-3 flex-wrap justify-center">
-                {stats.map(s => (
-                  <div key={s.label} className="bg-slate-800/60 border border-slate-700/60 rounded-xl px-4 py-3 text-center">
-                    <p className="text-lg font-extrabold text-green-400">{s.value}</p>
-                    <p className="text-[10px] text-slate-400">{s.label}</p>
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* SOCIAL PROOF CARDS */}
-      <section className="py-16 px-5 border-t border-slate-800/60">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {recentCards.map(c => (
-              <div key={c.q} className={`rounded-2xl border p-5 ${c.bg}`}>
-                <div className="flex items-start justify-between mb-3">
-                  <p className="text-sm font-medium text-slate-200 leading-snug max-w-[180px]">{c.q}</p>
-                  <span className={`text-2xl font-extrabold ${c.color}`}>{c.pct}%</span>
-                </div>
-                <Badge className={`${c.bg} ${c.color} border border-current/20 text-xs`}>
-                  {c.status}
-                </Badge>
+      <section className="py-12 px-5 border-t border-slate-800/60">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {proofCards.map(c => (
+            <div key={c.q} className={`rounded-2xl border p-5 ${c.bg}`}>
+              <div className="flex items-start justify-between mb-3">
+                <p className="text-sm font-medium text-slate-200 leading-snug max-w-[160px]">{c.q}</p>
+                <span className={`text-2xl font-extrabold ${c.color}`}>{c.pct}%</span>
               </div>
-            ))}
-          </div>
+              <Badge className={`${c.bg} ${c.color} border border-slate-700/20`}>{c.status}</Badge>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* FOOTER CTA */}
-      <section className="py-20 px-5">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="py-16 px-5">
+        <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
             Ready to make decisions <span className="text-green-400">backed by data</span>?
           </h2>
-          <p className="text-slate-400 mb-8">Join thousands who already use VeriLife to avoid costly mistakes and maximize life outcomes.</p>
-          <GreenBtn onClick={onEnter} className="text-base px-8 py-4 mx-auto">
+          <p className="text-slate-400 mb-7">Join thousands who use VeriLife to avoid costly mistakes and maximize life outcomes.</p>
+          <GreenBtn onClick={onEnter} className="px-8 py-4 text-base mx-auto">
             Get Started Free <ArrowRight size={16} />
           </GreenBtn>
         </div>
@@ -274,16 +221,15 @@ function LandingPage({ onEnter }) {
   );
 }
 
-/* ─── DASHBOARD ───────────────────────────────────────────────────── */
 const sideNav = [
-  { icon: <LayoutDashboard size={17} />, label: "Decision Maker", active: true },
-  { icon: <CheckCircle2 size={17} />, label: "Verifications" },
-  { icon: <Eye size={17} />, label: "Scans" },
-  { icon: <List size={17} />, label: "Watchlist" },
-  { icon: <Shield size={17} />, label: "My Reputation" },
-  { icon: <MessageSquare size={17} />, label: "Messages", badge: 3 },
-  { icon: <FileText size={17} />, label: "Reports" },
-  { icon: <Settings size={17} />, label: "Settings" },
+  { icon: <LayoutDashboard size={16} />, label: "Decision Maker", active: true },
+  { icon: <CheckCircle2 size={16} />, label: "Verifications" },
+  { icon: <Eye size={16} />, label: "Scans" },
+  { icon: <List size={16} />, label: "Watchlist" },
+  { icon: <Shield size={16} />, label: "My Reputation" },
+  { icon: <MessageSquare size={16} />, label: "Messages", badge: 3 },
+  { icon: <FileText size={16} />, label: "Reports" },
+  { icon: <Settings size={16} />, label: "Settings" },
 ];
 
 const analyses = [
@@ -294,11 +240,11 @@ const analyses = [
 ];
 
 const quickTabs = [
-  { icon: <Briefcase size={14} />, label: "Business" },
-  { icon: <TrendingUp size={14} />, label: "Investment" },
-  { icon: <GraduationCap size={14} />, label: "Career" },
-  { icon: <GraduationCap size={14} />, label: "Education" },
-  { icon: <DollarSign size={14} />, label: "Personal Finance" },
+  { icon: <Briefcase size={13} />, label: "Business" },
+  { icon: <TrendingUp size={13} />, label: "Investment" },
+  { icon: <GraduationCap size={13} />, label: "Career" },
+  { icon: <GraduationCap size={13} />, label: "Education" },
+  { icon: <DollarSign size={13} />, label: "Personal Finance" },
 ];
 
 const checks = [
@@ -309,133 +255,115 @@ const checks = [
 ];
 
 function RadialGauge({ pct }) {
-  const r = 70;
+  const r = 68;
   const circ = 2 * Math.PI * r;
-  const fill = (pct / 100) * circ * 0.75; // 270° arc
-  const gap = circ - fill;
+  const arc  = circ * 0.75;
+  const fill = (pct / 100) * arc;
   const color = pct >= 70 ? "#22c55e" : pct >= 45 ? "#f59e0b" : "#ef4444";
-
   return (
-    <div className="flex flex-col items-center">
-      <svg viewBox="0 0 180 130" className="w-44">
-        {/* track */}
-        <circle cx="90" cy="100" r={r} fill="none" stroke="#1e293b" strokeWidth="12"
-          strokeDasharray={`${circ * 0.75} ${circ}`}
-          strokeDashoffset={0}
-          strokeLinecap="round"
-          transform="rotate(-225 90 100)" />
-        {/* fill */}
-        <circle cx="90" cy="100" r={r} fill="none" stroke={color} strokeWidth="12"
-          strokeDasharray={`${fill} ${circ}`}
-          strokeDashoffset={0}
-          strokeLinecap="round"
-          transform="rotate(-225 90 100)" />
-        <text x="90" y="100" textAnchor="middle" dominantBaseline="middle"
-          className="fill-white font-extrabold" style={{ fontSize: 28, fontWeight: 800 }}>{pct}</text>
-        <text x="90" y="118" textAnchor="middle"
-          className="fill-slate-400" style={{ fontSize: 11 }}>/ 100</text>
-      </svg>
-    </div>
+    <svg viewBox="0 0 180 130" className="w-40">
+      <circle cx="90" cy="105" r={r} fill="none" stroke="#1e293b" strokeWidth="12"
+        strokeDasharray={`${arc} ${circ}`} strokeLinecap="round" transform="rotate(-225 90 105)" />
+      <circle cx="90" cy="105" r={r} fill="none" stroke={color} strokeWidth="12"
+        strokeDasharray={`${fill} ${circ}`} strokeLinecap="round" transform="rotate(-225 90 105)"
+        style={{ transition: "stroke-dasharray 0.6s ease" }} />
+      <text x="90" y="102" textAnchor="middle" dominantBaseline="middle"
+        fill="white" style={{ fontSize: 26, fontWeight: 800 }}>{pct}</text>
+      <text x="90" y="118" textAnchor="middle" fill="#94a3b8" style={{ fontSize: 10 }}>/ 100</text>
+    </svg>
   );
 }
 
 function Dashboard({ onBack }) {
-  const [active, setActive] = useState(0);
-  const [query, setQuery] = useState("");
+  const [active, setActive]       = useState(0);
+  const [query, setQuery]         = useState("");
   const [activeTab, setActiveTab] = useState(0);
-  const current = analyses[active];
+  const [sideOpen, setSideOpen]   = useState(false);
+  const cur = analyses[active];
 
   return (
-    <div className="flex h-screen overflow-hidden text-slate-100" style={{ background: "#080f1a", fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="flex h-screen overflow-hidden text-slate-100 bg-slate-950" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      {sideOpen && (
+        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSideOpen(false)} />
+      )}
 
-      {/* ── SIDEBAR ── */}
-      <aside className="hidden md:flex flex-col w-60 border-r border-slate-800/60 shrink-0" style={{ background: G.card }}>
-        {/* Logo */}
-        <div className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-800/60">
-          <div className="w-7 h-7 rounded-lg bg-green-600 flex items-center justify-center">
-            <Shield size={14} className="text-white" />
+      <aside className={`fixed md:relative inset-y-0 left-0 z-40 flex flex-col w-56 border-r border-slate-800/60 bg-slate-900 shrink-0
+        transition-transform duration-200 ${sideOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
+        <div className="h-14 flex items-center gap-2 px-4 border-b border-slate-800/60">
+          <div className="w-6 h-6 rounded-md bg-green-600 flex items-center justify-center">
+            <Shield size={13} className="text-white" />
           </div>
-          <span className="font-bold tracking-tight">VeriLife</span>
+          <span className="font-bold text-sm tracking-tight">VeriLife</span>
         </div>
-
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-          {sideNav.map((item, i) => (
+        <nav className="flex-1 px-2 py-3 flex flex-col gap-0.5 overflow-y-auto">
+          {sideNav.map(item => (
             <button key={item.label}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 w-full text-left
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all w-full text-left
                 ${item.active ? "bg-green-950/60 text-green-400 border border-green-800/40" : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200"}`}>
-              {item.icon}
-              {item.label}
+              {item.icon} {item.label}
               {item.badge && (
-                <span className="ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{item.badge}</span>
+                <span className="ml-auto bg-red-500 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{item.badge}</span>
               )}
             </button>
           ))}
         </nav>
-
-        {/* Premium CTA */}
-        <div className="m-3 p-4 rounded-2xl bg-gradient-to-br from-green-950 to-slate-900 border border-green-800/40">
-          <Crown size={18} className="text-yellow-400 mb-2" />
-          <p className="text-xs font-bold text-slate-200 mb-1">Go Premium</p>
-          <p className="text-[10px] text-slate-400 mb-3">Unlock unlimited analyses, advanced risk models & priority data.</p>
-          <button className="w-full py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold transition-colors">
+        <div className="m-2 p-3 rounded-2xl bg-gradient-to-br from-green-950 to-slate-900 border border-green-800/40">
+          <Crown size={15} className="text-yellow-400 mb-1.5" />
+          <p className="text-xs font-bold text-slate-200 mb-0.5">Go Premium</p>
+          <p className="text-[10px] text-slate-400 mb-2.5">Unlock unlimited analyses & advanced risk models.</p>
+          <button className="w-full py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-[11px] font-semibold transition-colors">
             Upgrade Now
           </button>
         </div>
       </aside>
 
-      {/* ── MAIN ── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-
-        {/* Top header */}
-        <header className="h-16 flex items-center justify-between px-6 border-b border-slate-800/60 shrink-0" style={{ background: G.card }}>
-          <div>
-            <h1 className="text-sm font-bold text-slate-100">Decision Maker</h1>
-            <p className="text-[11px] text-slate-400">AI-powered insights & real-time probability analysis</p>
-          </div>
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <header className="h-14 flex items-center justify-between px-4 border-b border-slate-800/60 bg-slate-900 shrink-0">
           <div className="flex items-center gap-3">
-            <GreenBtn small onClick={() => {}}>
-              <Sparkles size={13} /> New Analysis
+            <button className="md:hidden text-slate-400" onClick={() => setSideOpen(true)}>
+              <Menu size={18} />
+            </button>
+            <div>
+              <h1 className="text-sm font-bold">Decision Maker</h1>
+              <p className="text-[10px] text-slate-400 hidden sm:block">AI-powered insights & real-time probability analysis</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <GreenBtn small>
+              <Sparkles size={12} /> <span className="hidden sm:inline">New Analysis</span>
             </GreenBtn>
             <div className="relative">
-              <Bell size={18} className="text-slate-400" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500" />
+              <Bell size={16} className="text-slate-400" />
+              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" />
             </div>
-            <div className="flex items-center gap-2 pl-2 border-l border-slate-700">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-[10px] font-bold">D</div>
+            <div className="flex items-center gap-1.5 pl-2 border-l border-slate-700">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-[9px] font-bold">D</div>
               <div className="hidden sm:block">
-                <p className="text-xs font-semibold text-slate-200">David O.</p>
-                <p className="text-[10px] text-green-400 font-medium">Premium</p>
+                <p className="text-[11px] font-semibold">David O.</p>
+                <p className="text-[9px] text-green-400 font-medium">Premium</p>
               </div>
             </div>
-            <button onClick={onBack} className="text-slate-500 hover:text-slate-300 transition-colors ml-1" title="Back to landing">
-              <X size={16} />
+            <button onClick={onBack} className="text-slate-500 hover:text-slate-300 transition-colors" title="Back to landing">
+              <X size={15} />
             </button>
           </div>
         </header>
 
-        {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
-
-          {/* Input card */}
-          <div className="rounded-2xl border border-slate-800 p-5" style={{ background: G.mid }}>
-            <p className="text-xs text-slate-400 uppercase tracking-widest mb-3 font-semibold">What do you want to analyze today?</p>
-            <div className="flex gap-2 items-center rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 mb-4 focus-within:border-green-600 transition-colors">
-              <input
-                value={query}
-                onChange={e => setQuery(e.target.value)}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+          <div className="rounded-2xl border border-slate-800 p-4 bg-slate-800/50">
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-3 font-semibold">What do you want to analyze today?</p>
+            <div className="flex gap-2 items-center rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2.5 mb-3 focus-within:border-green-600 transition-colors">
+              <input value={query} onChange={e => setQuery(e.target.value)}
                 placeholder="Ask a question or describe a scenario… (e.g., 'How likely are you to make it in drop shipping at 17?')"
-                className="flex-1 bg-transparent text-sm text-slate-200 placeholder-slate-500 outline-none"
-              />
-              <button className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold transition-colors">
-                <Sparkles size={13} /> Analyze
+                className="flex-1 bg-transparent text-xs text-slate-200 placeholder-slate-500 outline-none min-w-0" />
+              <button className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold transition-colors">
+                <Sparkles size={11} /> Analyze
               </button>
             </div>
-            {/* Quick tabs */}
             <div className="flex gap-2 flex-wrap">
               {quickTabs.map((t, i) => (
                 <button key={t.label} onClick={() => setActiveTab(i)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all
                     ${activeTab === i ? "bg-green-600 text-white" : "bg-slate-800 text-slate-400 hover:bg-slate-700"}`}>
                   {t.icon} {t.label}
                 </button>
@@ -443,12 +371,9 @@ function Dashboard({ onBack }) {
             </div>
           </div>
 
-          {/* 3-column grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-            {/* Col 1: Recent analyses */}
-            <div className="rounded-2xl border border-slate-800 p-4 flex flex-col gap-1" style={{ background: G.mid }}>
-              <p className="text-xs text-slate-400 uppercase tracking-widest mb-2 font-semibold">Recent Analyses</p>
+            <div className="rounded-2xl border border-slate-800 p-3 bg-slate-800/50 flex flex-col gap-1">
+              <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-2 font-semibold px-1">Recent Analyses</p>
               {analyses.map((a, i) => (
                 <button key={i} onClick={() => setActive(i)}
                   className={`w-full text-left p-3 rounded-xl border transition-all duration-150
@@ -457,7 +382,7 @@ function Dashboard({ onBack }) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <span className={`w-1.5 h-1.5 rounded-full ${a.dot}`} />
-                      <span className={`text-[11px] font-semibold ${a.color}`}>{a.status}</span>
+                      <span className={`text-[10px] font-semibold ${a.color}`}>{a.status}</span>
                     </div>
                     <span className={`text-sm font-extrabold ${a.color}`}>{a.pct}%</span>
                   </div>
@@ -465,75 +390,66 @@ function Dashboard({ onBack }) {
               ))}
             </div>
 
-            {/* Col 2: Score gauge */}
-            <div className="rounded-2xl border border-slate-800 p-5 flex flex-col items-center" style={{ background: G.mid }}>
-              <p className="text-xs text-slate-400 uppercase tracking-widest mb-4 font-semibold self-start">Success Score</p>
-              <RadialGauge pct={current.pct} />
-              <Badge className={`mt-2 mb-4 ${
-                current.pct >= 70 ? "bg-green-950 text-green-400 border-green-800/40" :
-                current.pct >= 45 ? "bg-orange-950 text-orange-400 border-orange-800/40" :
-                "bg-red-950 text-red-400 border-red-800/40"
-              } border text-[11px]`}>
-                {current.status}
+            <div className="rounded-2xl border border-slate-800 p-4 bg-slate-800/50 flex flex-col items-center">
+              <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-3 font-semibold self-start">Success Score</p>
+              <RadialGauge pct={cur.pct} />
+              <Badge className={`mt-1 mb-3 border text-[10px] ${
+                cur.pct >= 70 ? "bg-green-950 text-green-400 border-green-800/40" :
+                cur.pct >= 45 ? "bg-orange-950 text-orange-400 border-orange-800/40" :
+                "bg-red-950 text-red-400 border-red-800/40"}`}>
+                {cur.status}
               </Badge>
-              <p className="text-[11px] text-slate-400 text-center leading-relaxed mb-5">
-                {current.pct >= 70
+              <p className="text-[11px] text-slate-400 text-center leading-relaxed mb-4">
+                {cur.pct >= 70
                   ? "Real-time data suggests a strong baseline for success if managed correctly. Keep it up!"
-                  : current.pct >= 45
-                  ? "Moderate risk detected. Proceed carefully and mitigate key exposure points before committing."
-                  : "High risk profile. Current data does not support a high-confidence outcome. Review strategy."}
+                  : cur.pct >= 45
+                  ? "Moderate risk detected. Mitigate key exposure points before committing."
+                  : "High risk profile. Current data doesn't support a confident outcome. Review strategy."}
               </p>
-              <button className="mt-auto w-full py-2 rounded-xl border border-green-700/50 text-green-400 text-xs font-semibold hover:bg-green-950/40 transition-colors flex items-center justify-center gap-2">
-                View Detailed Data Points <ChevronRight size={13} />
+              <button className="mt-auto w-full py-2 rounded-xl border border-green-700/50 text-green-400 text-xs font-semibold hover:bg-green-950/40 transition-colors flex items-center justify-center gap-1.5">
+                View Detailed Data Points <ChevronRight size={12} />
               </button>
             </div>
 
-            {/* Col 3: AI Recommendation */}
-            <div className="rounded-2xl border border-slate-800 p-5 flex flex-col" style={{ background: G.mid }}>
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold">AI Recommendation</p>
-                <div className="w-7 h-7 rounded-lg bg-green-600 flex items-center justify-center">
-                  <Shield size={13} className="text-white" />
+            <div className="rounded-2xl border border-slate-800 p-4 bg-slate-800/50 flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">AI Recommendation</p>
+                <div className="w-6 h-6 rounded-lg bg-green-600 flex items-center justify-center">
+                  <Shield size={12} className="text-white" />
                 </div>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed mb-5">
-                Based on our analysis of current market trends, demographic data, and historical failure/success rates, this path shows{" "}
+              <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                Based on our analysis of current market trends, demographic data, and historical success rates, this path shows{" "}
                 <span className="text-green-400 font-semibold">
-                  {current.pct >= 70 ? "strong potential" : current.pct >= 45 ? "moderate potential" : "limited potential"}
+                  {cur.pct >= 70 ? "strong potential" : cur.pct >= 45 ? "moderate potential" : "limited potential"}
                 </span>{" "}
-                but carries specific {current.pct >= 70 ? "minor" : "notable"} risks that require attention.
+                but carries {cur.pct >= 70 ? "minor" : "notable"} risks that require attention.
               </p>
-              <div className="flex flex-col gap-2.5 mb-5">
+              <div className="flex flex-col gap-2 mb-4">
                 {checks.map((c, i) => {
-                  const ok = current.pct >= 70 || (current.pct >= 45 && i < 2) || (current.pct < 45 && i === 0);
+                  const ok = cur.pct >= 70 || (cur.pct >= 45 && i < 2) || (cur.pct < 45 && i === 0);
                   return (
-                    <div key={c} className="flex items-center gap-2.5">
-                      <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0
-                        ${ok ? "bg-green-600" : "bg-slate-700"}`}>
-                        {ok
-                          ? <CheckCircle2 size={11} className="text-white" />
-                          : <X size={10} className="text-slate-400" />}
+                    <div key={c} className="flex items-center gap-2">
+                      <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-green-600" : "bg-slate-700"}`}>
+                        {ok ? <CheckCircle2 size={10} className="text-white" /> : <X size={9} className="text-slate-400" />}
                       </div>
                       <span className={`text-[11px] font-medium ${ok ? "text-slate-200" : "text-slate-500"}`}>{c}</span>
                     </div>
                   );
                 })}
               </div>
-              <div className="mt-auto rounded-xl bg-slate-900/60 border border-slate-700/60 p-3">
-                <div className="flex items-center gap-2">
-                  <Activity size={13} className="text-green-400" />
-                  <span className="text-[11px] text-slate-300 font-medium">Live data — updated just now</span>
-                </div>
+              <div className="mt-auto rounded-xl bg-slate-900/60 border border-slate-700/60 p-2.5 flex items-center gap-2">
+                <Activity size={12} className="text-green-400 shrink-0" />
+                <span className="text-[10px] text-slate-300 font-medium">Live data — updated just now</span>
               </div>
             </div>
           </div>
 
-          {/* Bottom banner */}
-          <div className="rounded-2xl border border-green-800/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+          <div className="rounded-2xl border border-green-800/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
             style={{ background: "linear-gradient(135deg, #052e16 0%, #0f172a 100%)" }}>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-green-600/20 border border-green-700/40 flex items-center justify-center shrink-0">
-                <Lock size={18} className="text-green-400" />
+              <div className="w-9 h-9 rounded-xl bg-green-600/20 border border-green-700/40 flex items-center justify-center shrink-0">
+                <Lock size={16} className="text-green-400" />
               </div>
               <div>
                 <p className="text-sm font-bold text-slate-100">Stay protected. Stay informed. Stay ahead.</p>
@@ -541,19 +457,17 @@ function Dashboard({ onBack }) {
               </div>
             </div>
             <GreenBtn small className="shrink-0">
-              Enable Continuous Tracking <ChevronRight size={13} />
+              Enable Continuous Tracking <ChevronRight size={12} />
             </GreenBtn>
           </div>
-
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── ROOT ────────────────────────────────────────────────────────── */
 export default function VeriLifeApp() {
-  const [view, setView] = useState("landing"); // "landing" | "dashboard"
+  const [view, setView] = useState("landing");
   return view === "landing"
     ? <LandingPage onEnter={() => setView("dashboard")} />
     : <Dashboard onBack={() => setView("landing")} />;
