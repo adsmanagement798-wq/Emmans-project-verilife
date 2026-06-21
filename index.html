@@ -1,248 +1,560 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VeriLife - Light Mode Edition</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script src="https://unpkg.com/lucide@latest"></script>
+import { useState } from "react";
+import {
+  Shield, BarChart2, Globe, Zap, Star, Bell, Settings,
+  ChevronRight, Play, Sparkles, TrendingUp, Briefcase,
+  GraduationCap, DollarSign, User, CheckCircle2, ArrowRight,
+  MessageSquare, FileText, Eye, List, Crown, AlertTriangle,
+  Activity, Lock, ChevronUp, Menu, X, LayoutDashboard
+} from "lucide-react";
 
-  <style>
-    /* Custom UI Scrollbar matching light slate backgrounds */
-    .custom-scroll::-webkit-scrollbar {
-      width: 5px;
-    }
-    .custom-scroll::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-    }
-    /* Smooth transition for the circular chart score indicator */
-    .gauge-arc {
-      transition: stroke-dashoffset 0.5s ease-in-out;
-    }
-  </style>
-</head>
-<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased">
+/* ─── COLOUR & STYLE TOKENS ───────────────────────────────────────── */
+const G = {
+  primary:   "#16a34a",   // green-600
+  primaryLt: "#dcfce7",   // green-100
+  primaryDk: "#14532d",   // green-900
+  accent:    "#22c55e",   // green-500
+  dark:      "#0f172a",   // slate-900
+  mid:       "#1e293b",   // slate-800
+  muted:     "#334155",   // slate-700
+  text:      "#f8fafc",   // slate-50
+  subtext:   "#94a3b8",   // slate-400
+  panel:     "#1e293b",
+  card:      "#0f172a",
+};
 
-  <div id="landingView" class="block min-h-screen bg-white">
-    <nav class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between border-b border-slate-100">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('landing')">
-        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-600 text-white font-bold text-base shadow-sm">
-          VL
-        </div>
-        <span class="text-lg font-bold tracking-tight text-slate-900">VeriLife</span>
-      </div>
+/* ─── SHARED MINI COMPONENTS ──────────────────────────────────────── */
+const Badge = ({ children, className = "" }) => (
+  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${className}`}>
+    {children}
+  </span>
+);
 
-      <div class="flex items-center space-x-4">
-        <button onclick="switchView('dashboard')" class="text-xs font-bold bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition shadow-md shadow-emerald-600/10">
-          Get Started
-        </button>
-      </div>
-    </nav>
+const GreenBtn = ({ children, onClick, className = "", small = false }) => (
+  <button
+    onClick={onClick}
+    className={`inline-flex items-center gap-2 font-semibold rounded-xl transition-all duration-200
+      bg-green-600 hover:bg-green-500 active:scale-95 text-white shadow-lg shadow-green-900/30
+      ${small ? "px-4 py-2 text-sm" : "px-6 py-3 text-sm"}
+      ${className}`}
+  >
+    {children}
+  </button>
+);
 
-    <div class="max-w-4xl mx-auto px-4 pt-16 pb-24 text-center space-y-8">
-      <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-[11px] font-semibold text-emerald-700 tracking-wide">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-        <span>AI-POWERED TRUST & DECISION INTELLIGENCE</span>
-      </div>
+const GhostBtn = ({ children, onClick, className = "" }) => (
+  <button
+    onClick={onClick}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl
+      border border-slate-700 text-slate-200 hover:bg-slate-800 transition-all duration-200
+      ${className}`}
+  >
+    {children}
+  </button>
+);
 
-      <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-[1.15]">
-        Make Smarter Decisions.<br />
-        Live a <span class="text-emerald-600">Safer</span> Life.
-      </h1>
+/* ─── LANDING PAGE ────────────────────────────────────────────────── */
+function LandingPage({ onEnter }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-      <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-        VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
-      </p>
+  const navLinks = ["Features", "How It Works", "Use Cases", "Pricing", "Blog", "About Us"];
 
-      <div class="flex flex-col sm:flex-row justify-center items-center gap-3 pt-4">
-        <button onclick="switchView('dashboard')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition">
-          <span>Start Free Analysis</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </button>
-      </div>
+  const stats = [
+    { label: "Analyses today", value: "12,458+" },
+    { label: "Avg accuracy", value: "94.2%" },
+    { label: "Active users", value: "38k+" },
+  ];
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-12 max-w-3xl mx-auto">
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-          <div class="text-xs font-bold text-slate-600">Predictive Analytics</div>
-        </div>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-          <div class="text-xs font-bold text-slate-600">Risk Mitigation</div>
-        </div>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-          <div class="text-xs font-bold text-slate-600">Real-Time Data</div>
-        </div>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
-          <div class="text-xs font-bold text-slate-600">Reputation Scores</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  const features = [
+    { icon: <TrendingUp size={15} />, label: "Predictive Analytics" },
+    { icon: <Shield size={15} />, label: "Risk Mitigation" },
+    { icon: <Globe size={15} />, label: "Real-Time Data" },
+    { icon: <Star size={15} />, label: "Reputation Scores" },
+  ];
 
+  const recentCards = [
+    { q: "Dropshipping at 17?", pct: 42, status: "Risky", color: "text-orange-400", bg: "bg-orange-950/40 border-orange-800/40" },
+    { q: "Index Funds vs Crypto ($1k)", pct: 78, status: "Safe", color: "text-green-400", bg: "bg-green-950/40 border-green-800/40" },
+    { q: "Moving to new city for dev role", pct: 85, status: "Strong", color: "text-emerald-400", bg: "bg-emerald-950/40 border-emerald-800/40" },
+  ];
 
-  <div id="dashboardView" class="hidden min-h-screen bg-[#f8fafc] flex flex-col">
-    <header class="h-20 border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between bg-white shrink-0 sticky top-0 z-50">
-      <div>
-        <h2 class="text-sm font-extrabold text-slate-900 tracking-wide uppercase">Decision Maker</h2>
-        <p class="text-[11px] text-slate-500">AI-powered insights & real-time probability analysis</p>
-      </div>
-      <div class="flex items-center space-x-3">
-        <button onclick="clearAndFocusInput()" class="inline-flex items-center space-x-1.5 bg-emerald-600 text-white px-3 py-1.5 rounded-full text-[11px] font-bold hover:bg-emerald-700 transition">
-          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-          <span>New Analysis</span>
-        </button>
-        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold border border-emerald-200 text-emerald-800">D</div>
-        <button onclick="switchView('landing')" class="p-2 text-slate-400 hover:text-slate-600 transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </header>
+  return (
+    <div className="min-h-screen text-slate-100" style={{ background: G.dark, fontFamily: "'Inter', system-ui, sans-serif" }}>
 
-    <div class="flex-1 max-w-md mx-auto w-full p-4 space-y-4 overflow-y-auto pb-12">
-      
-      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 space-y-4 shadow-sm">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">What do you want to analyze today?</label>
-        
-        <div class="relative flex items-center">
-          <input 
-            id="queryInput"
-            type="text" 
-            placeholder="Ask a question or describe a scenario..." 
-            class="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl py-3 pl-4 pr-24 text-xs text-slate-900 placeholder-slate-400 outline-none transition focus:ring-1 focus:ring-emerald-500"
-          />
-          <button onclick="triggerAnalysis()" class="absolute right-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-black flex items-center space-x-1 hover:bg-emerald-700 transition">
-            <i data-lucide="sparkles" class="w-3 h-3"></i>
-            <span>Analyze</span>
+      {/* NAV */}
+      <nav className="sticky top-0 z-50 border-b border-slate-800/60 backdrop-blur-xl" style={{ background: "rgba(15,23,42,0.85)" }}>
+        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
+              <Shield size={16} className="text-white" />
+            </div>
+            <span className="font-bold text-lg tracking-tight">VeriLife</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map(l => (
+              <a key={l} href="#" className="text-sm text-slate-400 hover:text-slate-100 transition-colors">{l}</a>
+            ))}
+          </div>
+
+          <div className="hidden md:flex items-center gap-3">
+            <GhostBtn onClick={onEnter}>Log in</GhostBtn>
+            <GreenBtn onClick={onEnter}>Get Started</GreenBtn>
+          </div>
+
+          <button className="md:hidden text-slate-400" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
-
-        <div class="grid grid-cols-3 gap-2">
-          <button class="px-2 py-2 rounded-xl text-[11px] font-bold bg-emerald-600 text-white inline-flex items-center justify-center space-x-1"><i data-lucide="briefcase" class="w-3 h-3"></i><span>Business</span></button>
-          <button class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1"><i data-lucide="trending-up" class="w-3 h-3"></i><span>Investment</span></button>
-          <button class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1"><i data-lucide="award" class="w-3 h-3"></i><span>Career</span></button>
-          <button class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1"><i data-lucide="book-open" class="w-3 h-3"></i><span>Education</span></button>
-          <button class="px-2 py-2 rounded-xl text-[11px] font-bold bg-slate-50 border border-slate-200 text-slate-600 inline-flex items-center justify-center space-x-1" style="grid-column: span 2;"><i data-lucide="dollar-sign" class="w-3 h-3"></i><span>Personal Finance</span></button>
-        </div>
-      </div>
-
-      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 space-y-3 shadow-sm">
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recent Analyses</h3>
-        <div id="recentsWrapper" class="space-y-2 max-h-[220px] overflow-y-auto custom-scroll pr-0.5">
+        {mobileOpen && (
+          <div className="md:hidden px-5 pb-5 flex flex-col gap-3 border-t border-slate-800">
+            {navLinks.map(l => <a key={l} href="#" className="text-sm text-slate-300 py-1">{l}</a>)}
+            <GreenBtn onClick={onEnter} className="w-full justify-center mt-2">Get Started</GreenBtn>
           </div>
-      </div>
+        )}
+      </nav>
 
-      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm text-center flex flex-col items-center justify-center space-y-4">
-        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Success Score</h3>
-        
-        <div class="relative flex items-center justify-center">
-          <svg class="w-32 h-32 transform -rotate-90">
-            <circle cx="64" cy="64" r="46" stroke="#f1f5f9" stroke-width="8" fill="transparent" stroke-dasharray="289" stroke-linecap="round"/>
-            <circle 
-              id="metricArc"
-              cx="64" cy="64" r="46"
-              stroke="#eab308"
-              stroke-width="8" fill="transparent"
-              stroke-linecap="round"
-              class="gauge-arc"
-            />
-          </svg>
-          <div class="absolute flex flex-col items-center justify-center">
-            <div class="flex items-baseline justify-center">
-              <span id="scoreVal" class="text-3xl font-black text-slate-900 tracking-tight">42</span>
-              <span class="text-[10px] text-slate-400 font-bold ml-0.5">/100</span>
+      {/* HERO */}
+      <section className="relative overflow-hidden pt-20 pb-24 px-5">
+        {/* ambient glow */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full opacity-10"
+            style={{ background: "radial-gradient(circle, #16a34a 0%, transparent 70%)" }} />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            {/* LEFT */}
+            <div className="flex-1 text-center lg:text-left">
+              <Badge className="mb-6 bg-green-950 text-green-400 border border-green-800/60">
+                <Sparkles size={12} /> AI-Powered Trust & Decision Intelligence
+              </Badge>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6">
+                Make <span className="text-green-400">Smarter</span> Decisions.<br />
+                Live a <span className="text-green-400">Safer</span> Life.
+              </h1>
+
+              <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                VeriLife analyzes complex life, business, and financial scenarios using real-time data — then calculates your probability of success so you can move forward with confidence.
+              </p>
+
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-10">
+                <GreenBtn onClick={onEnter} className="text-base px-7 py-3.5">
+                  Start Free Analysis <ArrowRight size={16} />
+                </GreenBtn>
+                <GhostBtn>
+                  <Play size={14} fill="currentColor" /> Watch Demo
+                </GhostBtn>
+              </div>
+
+              {/* Feature pills */}
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                {features.map(f => (
+                  <div key={f.label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-xs text-slate-300">
+                    <span className="text-green-400">{f.icon}</span>
+                    {f.label}
+                  </div>
+                ))}
+              </div>
             </div>
-            <span id="labelBadge" class="mt-0.5 text-[9px] px-2 py-0.5 font-bold rounded-md bg-amber-50 text-amber-700 border border-amber-200">Risky</span>
+
+            {/* RIGHT: mock phone + cards */}
+            <div className="flex-1 flex flex-col items-center gap-5">
+              {/* Phone mockup */}
+              <div className="relative">
+                <div className="w-64 rounded-[2rem] overflow-hidden border-2 border-slate-700 shadow-2xl"
+                  style={{ background: G.mid }}>
+                  {/* status bar */}
+                  <div className="bg-slate-900 px-5 py-3 flex justify-between items-center text-[10px] text-slate-500">
+                    <span>9:41</span>
+                    <div className="w-20 h-4 rounded-full bg-slate-800" />
+                    <span>●●●</span>
+                  </div>
+                  <div className="px-4 py-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-6 h-6 rounded-md bg-green-600 flex items-center justify-center">
+                        <Shield size={12} className="text-white" />
+                      </div>
+                      <span className="text-xs font-bold text-slate-200">VeriLife</span>
+                    </div>
+                    <p className="text-[11px] font-bold text-white mb-1">Analyze Anything.</p>
+                    <p className="text-[11px] font-bold text-green-400 mb-4">Decide Everything.</p>
+                    <div className="rounded-xl bg-slate-900 border border-slate-700 p-3 mb-3">
+                      <p className="text-[10px] text-slate-400 leading-relaxed">How likely am I to succeed in dropshipping at 17?</p>
+                    </div>
+                    {/* score ring mock */}
+                    <div className="flex items-center justify-center py-3">
+                      <div className="relative w-16 h-16 flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full -rotate-90">
+                          <circle cx="32" cy="32" r="26" fill="none" stroke="#1e293b" strokeWidth="6"/>
+                          <circle cx="32" cy="32" r="26" fill="none" stroke="#16a34a" strokeWidth="6"
+                            strokeDasharray={`${2 * Math.PI * 26 * 0.42} ${2 * Math.PI * 26}`} strokeLinecap="round"/>
+                        </svg>
+                        <span className="text-sm font-bold text-white">42%</span>
+                      </div>
+                    </div>
+                    <Badge className="w-full justify-center bg-orange-950 text-orange-400 text-[10px] border border-orange-800/40">
+                      <AlertTriangle size={10} /> Risky — Proceed with caution
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* floating trust badge */}
+                <div className="absolute -right-4 top-10 bg-green-950 border border-green-700/50 rounded-2xl px-4 py-3 shadow-xl min-w-[160px]">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
+                      <CheckCircle2 size={11} className="text-white" />
+                    </div>
+                    <span className="text-[10px] font-bold text-green-300">Trusted by thousands</span>
+                  </div>
+                  <p className="text-[10px] text-green-500">12,458+ analyses today</p>
+                  {/* mini sparkline */}
+                  <svg viewBox="0 0 80 20" className="w-full mt-2">
+                    <polyline points="0,16 15,12 30,14 45,8 60,10 80,4"
+                      fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+
+                {/* floating rating */}
+                <div className="absolute -left-4 bottom-16 bg-slate-800 border border-slate-700 rounded-2xl px-3 py-2 shadow-xl">
+                  <div className="flex gap-0.5 mb-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} size={10} className="text-yellow-400" fill="#facc15" />)}
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-200">4.9 / 5.0</p>
+                  <p className="text-[9px] text-slate-400">2,340 reviews</p>
+                </div>
+              </div>
+
+              {/* Stats row */}
+              <div className="flex gap-3 flex-wrap justify-center">
+                {stats.map(s => (
+                  <div key={s.label} className="bg-slate-800/60 border border-slate-700/60 rounded-xl px-4 py-3 text-center">
+                    <p className="text-lg font-extrabold text-green-400">{s.value}</p>
+                    <p className="text-[10px] text-slate-400">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <p id="contextNotes" class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-          High risk profile. Current data does not support a high-confidence outcome. Review strategy setup configurations.
-        </p>
-
-        <button class="w-full bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs flex items-center justify-center space-x-1 transition">
-          <span>View Detailed Data Points</span>
-          <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-
-      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-4">
-        <div class="flex justify-between items-center">
-          <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Recommendation</h3>
-        </div>
-
-        <p id="recParagraph" class="text-xs text-slate-600 leading-relaxed bg-slate-50 border border-slate-100 p-3 rounded-xl">
-          Based on our analysis of current market trends, demographic data, and historical failure/success rates, this path shows limited potential but carries specific notable risks that require attention.
-        </p>
-
-        <div id="checklistsGrid" class="space-y-2.5 pt-1 border-t border-slate-100">
-          </div>
-
-        <div class="flex items-center justify-center space-x-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 py-2 rounded-xl text-[10px] font-bold">
-          <i data-lucide="activity" class="w-3.5 h-3.5 animate-pulse"></i>
-          <span>Live data — updated just now</span>
-        </div>
-      </div>
-
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
-        <div class="flex items-start space-x-3">
-          <div class="p-2 bg-slate-800 rounded-xl text-emerald-400 shrink-0">
-            <i data-lucide="shield-check" class="w-4 h-4"></i>
-          </div>
-          <div class="space-y-0.5">
-            <h4 class="text-xs font-bold text-white">Stay protected. Stay informed.</h4>
-            <p class="text-[10px] text-slate-400 leading-normal">Get notified when your scenario's probability metrics shift by more than 10%.</p>
+      {/* SOCIAL PROOF CARDS */}
+      <section className="py-16 px-5 border-t border-slate-800/60">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {recentCards.map(c => (
+              <div key={c.q} className={`rounded-2xl border p-5 ${c.bg}`}>
+                <div className="flex items-start justify-between mb-3">
+                  <p className="text-sm font-medium text-slate-200 leading-snug max-w-[180px]">{c.q}</p>
+                  <span className={`text-2xl font-extrabold ${c.color}`}>{c.pct}%</span>
+                </div>
+                <Badge className={`${c.bg} ${c.color} border border-current/20 text-xs`}>
+                  {c.status}
+                </Badge>
+              </div>
+            ))}
           </div>
         </div>
-        <button class="w-full py-2.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs shadow-sm hover:bg-emerald-400 transition">
-          Enable Continuous Tracking
-        </button>
-      </div>
+      </section>
 
+      {/* FOOTER CTA */}
+      <section className="py-20 px-5">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
+            Ready to make decisions <span className="text-green-400">backed by data</span>?
+          </h2>
+          <p className="text-slate-400 mb-8">Join thousands who already use VeriLife to avoid costly mistakes and maximize life outcomes.</p>
+          <GreenBtn onClick={onEnter} className="text-base px-8 py-4 mx-auto">
+            Get Started Free <ArrowRight size={16} />
+          </GreenBtn>
+        </div>
+      </section>
     </div>
-  </div>
+  );
+}
 
+/* ─── DASHBOARD ───────────────────────────────────────────────────── */
+const sideNav = [
+  { icon: <LayoutDashboard size={17} />, label: "Decision Maker", active: true },
+  { icon: <CheckCircle2 size={17} />, label: "Verifications" },
+  { icon: <Eye size={17} />, label: "Scans" },
+  { icon: <List size={17} />, label: "Watchlist" },
+  { icon: <Shield size={17} />, label: "My Reputation" },
+  { icon: <MessageSquare size={17} />, label: "Messages", badge: 3 },
+  { icon: <FileText size={17} />, label: "Reports" },
+  { icon: <Settings size={17} />, label: "Settings" },
+];
 
-  <script>
-    // State items storage array reflecting exact video metrics fields setup variables
-    let analysesDataset = [
-      {
-        id: 1,
-        question: "How likely am I to make it in dropshipping at 17?",
-        status: "Risky",
-        themeClass: "text-amber-700 bg-amber-50 border-amber-200",
-        strokeColor: "#eab308",
-        percentage: 42,
-        notes: "High risk profile. Current data does not support a high-confidence outcome. Review strategy setup configurations.",
-        summary: "Based on our analysis of current market trends, demographic data, and historical failure/success rates, this path shows limited potential but carries specific notable risks that require attention.",
-        checks: [
-          { name: "Market Viability Verified", valid: true },
-          { name: "Clear Risk Mitigation Strategy", valid: false },
-          { name: "Low Financial Exposure", valid: false },
-          { name: "Positive Community Feedback", valid: true }
-        ]
-      },
-      {
-        id: 2,
-        question: "Investing $1k into Index Funds vs Crypto",
-        status: "Safe",
-        themeClass: "text-emerald-700 bg-emerald-50 border-emerald-200",
-        strokeColor: "#10b981",
-        percentage: 78,
-        notes: "Balanced and stable accumulation configuration score. Strongly verified tracking variables present lower threshold deviation patterns.",
-        summary: "Data indicates strong underlying stability with index fund baselines compensating for crypto volatility. Recommended allocation favors high-probability risk-managed wealth accumulation variables.",
-        checks: [
-          { name: "Market Viability Verified", valid: true },
-          { name: "Clear Risk Mitigation Strategy", valid: true },
-          { name: "Low Financial Exposure", valid: true },
-          { name: "Positive Community Feedback", valid: false }
-        ]
-      },
-      {
-        id: 3,
-        question: "Moving to a new city for a junior dev role",
-        status
+const analyses = [
+  { q: "How likely am I to make it in dropshipping at 17?", pct: 42, status: "Risky", color: "text-orange-400", dot: "bg-orange-400" },
+  { q: "Investing $1k into Index Funds vs Crypto", pct: 78, status: "Safe", color: "text-green-400", dot: "bg-green-400" },
+  { q: "Moving to a new city for a junior dev role", pct: 85, status: "High Probability", color: "text-emerald-400", dot: "bg-emerald-400" },
+  { q: "Starting a software agency with no capital", pct: 29, status: "Low Probability", color: "text-red-400", dot: "bg-red-400" },
+];
+
+const quickTabs = [
+  { icon: <Briefcase size={14} />, label: "Business" },
+  { icon: <TrendingUp size={14} />, label: "Investment" },
+  { icon: <GraduationCap size={14} />, label: "Career" },
+  { icon: <GraduationCap size={14} />, label: "Education" },
+  { icon: <DollarSign size={14} />, label: "Personal Finance" },
+];
+
+const checks = [
+  "Market Viability Verified",
+  "Clear Risk Mitigation Strategy",
+  "Low Financial Exposure",
+  "Positive Community Feedback",
+];
+
+function RadialGauge({ pct }) {
+  const r = 70;
+  const circ = 2 * Math.PI * r;
+  const fill = (pct / 100) * circ * 0.75; // 270° arc
+  const gap = circ - fill;
+  const color = pct >= 70 ? "#22c55e" : pct >= 45 ? "#f59e0b" : "#ef4444";
+
+  return (
+    <div className="flex flex-col items-center">
+      <svg viewBox="0 0 180 130" className="w-44">
+        {/* track */}
+        <circle cx="90" cy="100" r={r} fill="none" stroke="#1e293b" strokeWidth="12"
+          strokeDasharray={`${circ * 0.75} ${circ}`}
+          strokeDashoffset={0}
+          strokeLinecap="round"
+          transform="rotate(-225 90 100)" />
+        {/* fill */}
+        <circle cx="90" cy="100" r={r} fill="none" stroke={color} strokeWidth="12"
+          strokeDasharray={`${fill} ${circ}`}
+          strokeDashoffset={0}
+          strokeLinecap="round"
+          transform="rotate(-225 90 100)" />
+        <text x="90" y="100" textAnchor="middle" dominantBaseline="middle"
+          className="fill-white font-extrabold" style={{ fontSize: 28, fontWeight: 800 }}>{pct}</text>
+        <text x="90" y="118" textAnchor="middle"
+          className="fill-slate-400" style={{ fontSize: 11 }}>/ 100</text>
+      </svg>
+    </div>
+  );
+}
+
+function Dashboard({ onBack }) {
+  const [active, setActive] = useState(0);
+  const [query, setQuery] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
+  const current = analyses[active];
+
+  return (
+    <div className="flex h-screen overflow-hidden text-slate-100" style={{ background: "#080f1a", fontFamily: "'Inter', system-ui, sans-serif" }}>
+
+      {/* ── SIDEBAR ── */}
+      <aside className="hidden md:flex flex-col w-60 border-r border-slate-800/60 shrink-0" style={{ background: G.card }}>
+        {/* Logo */}
+        <div className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-800/60">
+          <div className="w-7 h-7 rounded-lg bg-green-600 flex items-center justify-center">
+            <Shield size={14} className="text-white" />
+          </div>
+          <span className="font-bold tracking-tight">VeriLife</span>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
+          {sideNav.map((item, i) => (
+            <button key={item.label}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 w-full text-left
+                ${item.active ? "bg-green-950/60 text-green-400 border border-green-800/40" : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200"}`}>
+              {item.icon}
+              {item.label}
+              {item.badge && (
+                <span className="ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{item.badge}</span>
+              )}
+            </button>
+          ))}
+        </nav>
+
+        {/* Premium CTA */}
+        <div className="m-3 p-4 rounded-2xl bg-gradient-to-br from-green-950 to-slate-900 border border-green-800/40">
+          <Crown size={18} className="text-yellow-400 mb-2" />
+          <p className="text-xs font-bold text-slate-200 mb-1">Go Premium</p>
+          <p className="text-[10px] text-slate-400 mb-3">Unlock unlimited analyses, advanced risk models & priority data.</p>
+          <button className="w-full py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold transition-colors">
+            Upgrade Now
+          </button>
+        </div>
+      </aside>
+
+      {/* ── MAIN ── */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+
+        {/* Top header */}
+        <header className="h-16 flex items-center justify-between px-6 border-b border-slate-800/60 shrink-0" style={{ background: G.card }}>
+          <div>
+            <h1 className="text-sm font-bold text-slate-100">Decision Maker</h1>
+            <p className="text-[11px] text-slate-400">AI-powered insights & real-time probability analysis</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <GreenBtn small onClick={() => {}}>
+              <Sparkles size={13} /> New Analysis
+            </GreenBtn>
+            <div className="relative">
+              <Bell size={18} className="text-slate-400" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500" />
+            </div>
+            <div className="flex items-center gap-2 pl-2 border-l border-slate-700">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-[10px] font-bold">D</div>
+              <div className="hidden sm:block">
+                <p className="text-xs font-semibold text-slate-200">David O.</p>
+                <p className="text-[10px] text-green-400 font-medium">Premium</p>
+              </div>
+            </div>
+            <button onClick={onBack} className="text-slate-500 hover:text-slate-300 transition-colors ml-1" title="Back to landing">
+              <X size={16} />
+            </button>
+          </div>
+        </header>
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+
+          {/* Input card */}
+          <div className="rounded-2xl border border-slate-800 p-5" style={{ background: G.mid }}>
+            <p className="text-xs text-slate-400 uppercase tracking-widest mb-3 font-semibold">What do you want to analyze today?</p>
+            <div className="flex gap-2 items-center rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 mb-4 focus-within:border-green-600 transition-colors">
+              <input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Ask a question or describe a scenario… (e.g., 'How likely are you to make it in drop shipping at 17?')"
+                className="flex-1 bg-transparent text-sm text-slate-200 placeholder-slate-500 outline-none"
+              />
+              <button className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold transition-colors">
+                <Sparkles size={13} /> Analyze
+              </button>
+            </div>
+            {/* Quick tabs */}
+            <div className="flex gap-2 flex-wrap">
+              {quickTabs.map((t, i) => (
+                <button key={t.label} onClick={() => setActiveTab(i)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                    ${activeTab === i ? "bg-green-600 text-white" : "bg-slate-800 text-slate-400 hover:bg-slate-700"}`}>
+                  {t.icon} {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 3-column grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+            {/* Col 1: Recent analyses */}
+            <div className="rounded-2xl border border-slate-800 p-4 flex flex-col gap-1" style={{ background: G.mid }}>
+              <p className="text-xs text-slate-400 uppercase tracking-widest mb-2 font-semibold">Recent Analyses</p>
+              {analyses.map((a, i) => (
+                <button key={i} onClick={() => setActive(i)}
+                  className={`w-full text-left p-3 rounded-xl border transition-all duration-150
+                    ${active === i ? "border-green-700/60 bg-green-950/30" : "border-transparent hover:bg-slate-800/60"}`}>
+                  <p className="text-xs text-slate-200 font-medium leading-snug mb-2">{a.q}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 rounded-full ${a.dot}`} />
+                      <span className={`text-[11px] font-semibold ${a.color}`}>{a.status}</span>
+                    </div>
+                    <span className={`text-sm font-extrabold ${a.color}`}>{a.pct}%</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Col 2: Score gauge */}
+            <div className="rounded-2xl border border-slate-800 p-5 flex flex-col items-center" style={{ background: G.mid }}>
+              <p className="text-xs text-slate-400 uppercase tracking-widest mb-4 font-semibold self-start">Success Score</p>
+              <RadialGauge pct={current.pct} />
+              <Badge className={`mt-2 mb-4 ${
+                current.pct >= 70 ? "bg-green-950 text-green-400 border-green-800/40" :
+                current.pct >= 45 ? "bg-orange-950 text-orange-400 border-orange-800/40" :
+                "bg-red-950 text-red-400 border-red-800/40"
+              } border text-[11px]`}>
+                {current.status}
+              </Badge>
+              <p className="text-[11px] text-slate-400 text-center leading-relaxed mb-5">
+                {current.pct >= 70
+                  ? "Real-time data suggests a strong baseline for success if managed correctly. Keep it up!"
+                  : current.pct >= 45
+                  ? "Moderate risk detected. Proceed carefully and mitigate key exposure points before committing."
+                  : "High risk profile. Current data does not support a high-confidence outcome. Review strategy."}
+              </p>
+              <button className="mt-auto w-full py-2 rounded-xl border border-green-700/50 text-green-400 text-xs font-semibold hover:bg-green-950/40 transition-colors flex items-center justify-center gap-2">
+                View Detailed Data Points <ChevronRight size={13} />
+              </button>
+            </div>
+
+            {/* Col 3: AI Recommendation */}
+            <div className="rounded-2xl border border-slate-800 p-5 flex flex-col" style={{ background: G.mid }}>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold">AI Recommendation</p>
+                <div className="w-7 h-7 rounded-lg bg-green-600 flex items-center justify-center">
+                  <Shield size={13} className="text-white" />
+                </div>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed mb-5">
+                Based on our analysis of current market trends, demographic data, and historical failure/success rates, this path shows{" "}
+                <span className="text-green-400 font-semibold">
+                  {current.pct >= 70 ? "strong potential" : current.pct >= 45 ? "moderate potential" : "limited potential"}
+                </span>{" "}
+                but carries specific {current.pct >= 70 ? "minor" : "notable"} risks that require attention.
+              </p>
+              <div className="flex flex-col gap-2.5 mb-5">
+                {checks.map((c, i) => {
+                  const ok = current.pct >= 70 || (current.pct >= 45 && i < 2) || (current.pct < 45 && i === 0);
+                  return (
+                    <div key={c} className="flex items-center gap-2.5">
+                      <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0
+                        ${ok ? "bg-green-600" : "bg-slate-700"}`}>
+                        {ok
+                          ? <CheckCircle2 size={11} className="text-white" />
+                          : <X size={10} className="text-slate-400" />}
+                      </div>
+                      <span className={`text-[11px] font-medium ${ok ? "text-slate-200" : "text-slate-500"}`}>{c}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-auto rounded-xl bg-slate-900/60 border border-slate-700/60 p-3">
+                <div className="flex items-center gap-2">
+                  <Activity size={13} className="text-green-400" />
+                  <span className="text-[11px] text-slate-300 font-medium">Live data — updated just now</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom banner */}
+          <div className="rounded-2xl border border-green-800/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+            style={{ background: "linear-gradient(135deg, #052e16 0%, #0f172a 100%)" }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-green-600/20 border border-green-700/40 flex items-center justify-center shrink-0">
+                <Lock size={18} className="text-green-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-100">Stay protected. Stay informed. Stay ahead.</p>
+                <p className="text-xs text-slate-400">Get notified when your scenario's probability shifts by more than 10%.</p>
+              </div>
+            </div>
+            <GreenBtn small className="shrink-0">
+              Enable Continuous Tracking <ChevronRight size={13} />
+            </GreenBtn>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── ROOT ────────────────────────────────────────────────────────── */
+export default function VeriLifeApp() {
+  const [view, setView] = useState("landing"); // "landing" | "dashboard"
+  return view === "landing"
+    ? <LandingPage onEnter={() => setView("dashboard")} />
+    : <Dashboard onBack={() => setView("landing")} />;
+}
