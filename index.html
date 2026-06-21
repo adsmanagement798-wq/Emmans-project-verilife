@@ -12,25 +12,24 @@
   
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <style>
-    /* Prevent raw text flash before compilation completes */
-    [遽-cloak] { display: none; }
-  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-50">
 
   <div id="root"></div>
 
-  <script src="https://unpkg.com/lucide@latest"></script>
-
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect } = React;
 
-    // Helper component to render Lucide icons in global script browser environments
+    // Direct fallback rendering for Lucide icons to ensure execution doesn't block layout
     function Icon({ name, className }) {
-      React.useEffect(() => {
-        if (window.lucide) {
-          window.lucide.createIcons();
+      useEffect(() => {
+        try {
+          if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+          }
+        } catch (e) {
+          console.error("Lucide rendering error:", e);
         }
       }, [name]);
       return <i data-lucide={name} className={className}></i>;
@@ -38,7 +37,6 @@
 
     function VeriLifeApp() {
       const [currentView, setCurrentView] = useState('landing');
-      const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
       const [searchQuery, setSearchQuery] = useState('');
       const [activeAnalysisId, setActiveAnalysisId] = useState(1);
 
@@ -96,7 +94,7 @@
             { label: "Market Viability Verified", status: false },
             { label: "Clear Risk Mitigation Strategy", status: false },
             { label: "Low Financial Exposure", status: true },
-            { label: "Positive Community Feedback", status: false }
+            { status: false, label: "Positive Community Feedback" }
           ]
         }
       ]);
@@ -129,7 +127,7 @@
           status,
           statusColor,
           percentage: generatedPercentage,
-          summary: `Based on verified metrics regarding "${searchQuery}", our algorithmic suite assigns a ${generatedPercentage}% structural safety rating. Mitigating near-term friction indices will optimize this baseline calculation.`,
+          summary: "Analysis complete for structural index parameter items. Structural safety rating estimated.",
           checks: [
             { label: "Market Viability Verified", status: generatedPercentage > 40 },
             { label: "Clear Risk Mitigation Strategy", status: generatedPercentage > 60 },
@@ -144,173 +142,134 @@
       };
 
       return (
-        <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased selection:bg-green-200 selection:text-green-900">
+        <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased">
           
-          {/* ===================== LANDING PAGE ===================== */}
+          {/* LANDING VIEW */}
           {currentView === 'landing' && (
-            <div className="relative overflow-hidden bg-white">
-              <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-green-100/40 rounded-full blur-[140px] pointer-events-none" />
-              <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-emerald-100/30 rounded-full blur-[100px] pointer-events-none" />
-
-              {/* Nav */}
-              <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between border-b border-slate-100 relative z-20">
+            <div className="bg-white min-h-screen">
+              <nav className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between border-b border-slate-100">
                 <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentView('landing')}>
-                  <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 p-0.5 shadow-md shadow-green-500/10">
-                    <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 text-lg">
-                      VL
-                    </div>
+                  <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold text-lg">
+                    VL
                   </div>
-                  <span className="text-xl font-bold tracking-tight text-slate-900">VeriLife</span>
+                  <span className="text-xl font-bold text-slate-900">VeriLife</span>
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <button onClick={() => setCurrentView('dashboard')} className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition px-4 py-2">
-                    Log in
-                  </button>
-                  <button onClick={() => setCurrentView('dashboard')} className="text-sm font-semibold bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl transition duration-200 shadow-lg shadow-green-600/20 active:scale-95">
+                  <button onClick={() => setCurrentView('dashboard')} className="text-sm font-semibold bg-green-600 text-white px-5 py-2.5 rounded-xl">
                     Get Started
                   </button>
                 </div>
               </nav>
 
-              {/* Hero */}
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 relative z-10">
+              <div className="max-w-7xl mx-auto px-4 pt-16 pb-24 text-center lg:text-left">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                  
-                  <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
-                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-xs font-semibold text-green-700 tracking-wide">
-                      <Icon name="sparkles" className="w-3.5 h-3.5 text-green-600" />
+                  <div className="lg:col-span-7 space-y-8">
+                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-100 text-xs font-semibold text-green-700">
+                      <Icon name="sparkles" className="w-3.5 h-3.5" />
                       <span>AI-POWERED TRUST & DECISION INTELLIGENCE</span>
                     </div>
 
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
                       Make Smarter Decisions.<br />
-                      Live a <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Safer</span> Life.
+                      Live a <span className="text-green-600">Safer</span> Life.
                     </h1>
 
                     <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                      VeriLife helps you verify, analyze, and decide with confidence. Avoid scams, verify identities, and make better choices with the structural power of continuous macro AI data modeling.
+                      VeriLife helps you verify, analyze, and decide with confidence. Avoid scams, verify variables, and make better choices with continuous macro modeling.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                      <button onClick={() => setCurrentView('dashboard')} className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold transition shadow-xl shadow-green-600/20 group active:scale-95">
-                        <span>Start Free Analysis</span>
+                    <div className="flex justify-center lg:justify-start">
+                      <button onClick={() => setCurrentView('dashboard')} className="inline-flex items-center space-x-2 px-7 py-4 rounded-xl bg-green-600 text-white font-bold shadow-xl shadow-green-600/20">
+                        <span>Open Dashboard</span>
                         <Icon name="arrow-right" className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  {/* Phone Mockup */}
-                  <div className="lg:col-span-5 relative">
-                    <div className="relative mx-auto max-w-[340px] rounded-[40px] border-[8px] border-slate-900 bg-slate-900 p-3 shadow-2xl shadow-slate-900/10">
+                  <div className="lg:col-span-5 relative flex justify-center">
+                    <div className="w-full max-w-[340px] rounded-[40px] border-[8px] border-slate-900 bg-slate-900 p-3 shadow-2xl">
                       <div className="rounded-[30px] overflow-hidden bg-white p-4 space-y-4 text-left">
                         <div className="flex justify-between items-center text-xs text-slate-400 pb-2 border-b border-slate-100">
-                          <span className="font-bold text-green-600">VeriLife Panel</span>
+                          <span className="font-bold text-green-600">VeriLife Preview</span>
                           <div className="w-3 h-3 rounded-full bg-slate-200" />
                         </div>
-                        <div className="space-y-1">
-                          <h4 className="text-sm font-bold text-slate-900">Analyze Anything</h4>
-                          <p className="text-[11px] text-slate-500">Paste links, numbers, or describe layouts instantly.</p>
-                        </div>
                         <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-600 flex items-center justify-between">
-                          <span className="truncate">How likely am I to make it in dropshipping...</span>
+                          <span className="truncate">Evaluating Dropshipping Strategies...</span>
                           <Icon name="sparkles" className="w-3.5 h-3.5 text-green-500" />
                         </div>
-                        <div className="bg-green-50/50 border border-green-100 rounded-xl p-3 text-center space-y-2">
+                        <div className="bg-green-50/50 border border-green-100 rounded-xl p-3 text-center">
                           <div className="text-2xl font-black text-green-600">42%</div>
-                          <div className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md inline-block font-semibold">Risky Profile Matrix</div>
+                          <div className="text-[10px] text-amber-800 font-semibold">Risky Profile Matrix</div>
                         </div>
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
           )}
 
-          {/* ===================== DASHBOARD ===================== */}
+          {/* DASHBOARD VIEW */}
           {currentView === 'dashboard' && (
-            <div className="flex h-screen bg-slate-50 overflow-hidden">
+            <div className="flex h-screen overflow-hidden bg-slate-50">
               
-              {/* Sidebar */}
-              <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between hidden lg:flex">
+              {/* Desktop Sidebar */}
+              <aside className="w-64 bg-white border-r border-slate-200 flex-col justify-between hidden lg:flex">
                 <div>
                   <div className="h-20 px-6 flex items-center space-x-3 border-b border-slate-100 cursor-pointer" onClick={() => setCurrentView('landing')}>
-                    <div className="w-7 h-7 flex items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 p-0.5">
-                      <div className="w-full h-full bg-white rounded-[6px] flex items-center justify-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 text-xs">
-                        VL
-                      </div>
+                    <div className="w-7 h-7 flex items-center justify-center rounded-lg bg-green-600 text-white font-bold text-xs">
+                      VL
                     </div>
-                    <span className="text-lg font-bold tracking-tight text-slate-900">VeriLife</span>
+                    <span className="text-lg font-bold text-slate-900">VeriLife</span>
                   </div>
 
                   <nav className="p-4 space-y-1">
-                    <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-green-700 bg-green-50 border border-green-100 transition">
+                    <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-green-700 bg-green-50 border border-green-100">
                       <Icon name="layout-dashboard" className="w-4 h-4" />
                       <span>Decision Maker</span>
-                    </button>
-                    <button type="button" className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
-                      <Icon name="shield" className="w-4 h-4" />
-                      <span>Verifications</span>
-                    </button>
-                    <button type="button" className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
-                      <Icon name="bar-chart-3" className="w-4 h-4" />
-                      <span>Scans</span>
                     </button>
                   </nav>
                 </div>
               </aside>
 
-              {/* Main */}
-              <main className="flex-1 flex flex-col overflow-y-auto bg-slate-50">
-                
-                <header className="h-20 border-b border-slate-200/80 px-6 sm:px-8 flex items-center justify-between shrink-0 bg-white shadow-sm z-10">
+              {/* Main Content Pane */}
+              <main className="flex-1 flex flex-col overflow-y-auto">
+                <header className="h-20 border-b border-slate-200 px-6 flex items-center justify-between bg-white shrink-0 shadow-sm">
                   <div>
                     <h2 className="text-xl font-bold text-slate-900">Decision Maker</h2>
-                    <p className="text-xs text-slate-500">Get AI-powered insights & verified risk metrics.</p>
+                    <p className="text-xs text-slate-500">Get AI-powered insights & metrics.</p>
                   </div>
-
-                  <div className="flex items-center space-x-4">
-                    <button onClick={() => setCurrentView('landing')} className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900 transition shadow-sm">
-                      View Landing Page
-                    </button>
-                    <div className="flex items-center space-x-2.5 border-l border-slate-200 pl-4">
-                      <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-xs">
-                        DO
-                      </div>
-                      <div className="text-left">
-                        <div className="text-xs font-bold text-slate-900">David O.</div>
-                      </div>
-                    </div>
-                  </div>
+                  <button onClick={() => setCurrentView('landing')} className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600">
+                    Landing Page
+                  </button>
                 </header>
 
-                <div className="p-6 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
+                <div className="p-4 sm:p-8 space-y-6 max-w-7xl w-full mx-auto">
                   
-                  {/* Input Form */}
-                  <form onSubmit={handleAnalyze} className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-sm">
+                  {/* Form */}
+                  <form onSubmit={handleAnalyze} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">What scenario or strategy would you like to verify today?</label>
                     <div className="relative flex items-center">
                       <input 
                         type="text" 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Ask a question... (e.g., 'How likely am I to make it in dropshipping at 17?')" 
-                        className="w-full bg-slate-50 border border-slate-200 focus:border-green-500 focus:bg-white rounded-xl py-3.5 pl-4 pr-32 text-sm text-slate-900 placeholder-slate-400 outline-none transition"
+                        placeholder="Ask a question... (e.g., 'Investing $1k into Index Funds vs Crypto')" 
+                        className="w-full bg-slate-50 border border-slate-200 focus:bg-white rounded-xl py-3.5 pl-4 pr-32 text-sm text-slate-900 outline-none transition"
                       />
-                      <button type="submit" className="absolute right-2 px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold flex items-center space-x-1.5 hover:bg-green-700 transition shadow-md shadow-green-600/10">
+                      <button type="submit" className="absolute right-2 px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold flex items-center space-x-1.5">
                         <Icon name="sparkles" className="w-3.5 h-3.5" />
                         <span>Analyze</span>
                       </button>
                     </div>
                   </form>
 
-                  {/* 3-column grid */}
+                  {/* Grid layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     
-                    {/* Recent entries */}
-                    <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-sm">
+                    {/* List */}
+                    <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
                       <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Recent Profile Analyses</h3>
                       <div className="space-y-2 max-h-[360px] overflow-y-auto">
                         {prebuiltAnalyses.map((item) => (
@@ -318,15 +277,11 @@
                             key={item.id}
                             type="button"
                             onClick={() => setActiveAnalysisId(item.id)}
-                            className={`w-full p-3.5 rounded-xl border text-left transition flex flex-col gap-2 ${
-                              activeAnalysisId === item.id 
-                                ? 'bg-green-50/60 border-green-400/60 ring-1 ring-green-400/30' 
-                                : 'bg-white border-slate-100 hover:border-slate-200 hover:bg-slate-50/50'
-                            }`}
+                            className={"w-full p-3.5 rounded-xl border text-left transition flex flex-col gap-2 " + (activeAnalysisId === item.id ? "bg-green-50 border-green-400" : "bg-white border-slate-100 hover:bg-slate-50")}
                           >
                             <p className="text-xs font-bold text-slate-800 line-clamp-1">{item.question}</p>
                             <div className="flex justify-between items-center w-full">
-                              <span className={`text-[10px] px-2 py-0.5 rounded-md border font-semibold ${item.statusColor}`}>
+                              <span className={"text-[10px] px-2 py-0.5 rounded-md border font-semibold " + item.statusColor}>
                                 {item.status}
                               </span>
                               <span className="text-xs font-extrabold text-slate-500">{item.percentage}%</span>
@@ -336,8 +291,8 @@
                       </div>
                     </div>
 
-                    {/* Trust Gauge */}
-                    <div className="lg:col-span-3 bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between text-center space-y-6">
+                    {/* Chart Indicator */}
+                    <div className="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between text-center space-y-6">
                       <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Trust Score</h3>
                       
                       <div className="relative flex items-center justify-center">
@@ -350,27 +305,27 @@
                             strokeDasharray={circumference}
                             strokeDashoffset={strokeDashoffset}
                             strokeLinecap="round"
-                            style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
+                            style={{ transition: 'stroke-dashoffset 0.3s ease' }}
                           />
                         </svg>
                         <div className="absolute flex flex-col items-center justify-center">
                           <span className="text-4xl font-black text-slate-900">{currentAnalysis.percentage}</span>
-                          <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">/ 100</span>
+                          <span className="text-[10px] text-slate-400 font-bold">/ 100</span>
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <span className={`text-xs px-3 py-1 rounded-full border inline-block font-bold ${currentAnalysis.statusColor}`}>
+                      <div>
+                        <span className={"text-xs px-3 py-1 rounded-full border inline-block font-bold " + currentAnalysis.statusColor}>
                           {currentAnalysis.status} Matrix
                         </span>
                       </div>
                     </div>
 
-                    {/* AI Recommendation */}
-                    <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-5">
+                    {/* Recommendation Card */}
+                    <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-5">
                       <div className="space-y-3">
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">AI Recommendation</h3>
-                        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 leading-relaxed font-medium min-h-[110px]">
+                        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 leading-relaxed font-medium">
                           {currentAnalysis.summary}
                         </div>
                       </div>
@@ -381,7 +336,7 @@
                             <span className="text-slate-500 font-medium">{check.label}</span>
                             <Icon 
                               name={check.status ? "check-circle" : "x-circle"} 
-                              className={`w-4 h-4 ${check.status ? "text-emerald-600" : "text-rose-500"}`} 
+                              className={"w-4 h-4 " + (check.status ? "text-emerald-600" : "text-rose-500")} 
                             />
                           </div>
                         ))}
