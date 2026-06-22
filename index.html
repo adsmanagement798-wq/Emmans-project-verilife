@@ -1,389 +1,482 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VeriLife - Trust & Decision Intelligence</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
-</head>
-<body class="bg-slate-50 font-sans antialiased text-slate-700">
+import { useState } from "react";
+import {
+  Shield, Zap, Star, Play, ArrowRight, Sparkles,
+  Link2, Phone, Mail, FileText, User, Bell,
+  Settings, MessageSquare, BookOpen, AlertTriangle,
+  CheckCircle, Globe, Lock,
+  Menu, X, ClipboardList, Search, BookMarked,
+  BadgeCheck, Plus
+} from "lucide-react";
 
-  <div id="root"></div>
+export default function VeriLife() {
+  const [view, setView] = useState("landing");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
+  return (
+    <div className="font-sans antialiased">
+      {view === "landing" ? (
+        <LandingPage onEnterApp={() => setView("dashboard")} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+      ) : (
+        <Dashboard onBack={() => setView("landing")} />
+      )}
+    </div>
+  );
+}
 
-    // Direct, failsafe icon renderer matching Lucide setup
-    function SafeIcon({ name, size = 16, className = "", strokeWidth = 2, fill = "none" }) {
-      const iconRef = useRef(null);
+function LandingPage({ onEnterApp, mobileMenuOpen, setMobileMenuOpen }) {
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <Navbar onEnterApp={onEnterApp} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+      <Hero onEnterApp={onEnterApp} />
+      <ShowcaseSection />
+      <Footer />
+    </div>
+  );
+}
 
-      useEffect(() => {
-        if (iconRef.current) {
-          iconRef.current.innerHTML = "";
-          // Handle dynamic casing fallback safely
-          const cleanName = name.charAt(0).toUpperCase() + name.slice(1);
-          const target = window.lucide[cleanName] || window.lucide[name];
+function Navbar({ onEnterApp, mobileMenuOpen, setMobileMenuOpen }) {
+  const links = ["Features", "How It Works", "Use Cases", "Pricing", "Blog", "About Us"];
+  return (
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+            <Shield size={18} className="text-white" strokeWidth={2.5} />
+          </div>
+          <span className="text-xl font-bold text-slate-900 tracking-tight">VeriLife</span>
+        </div>
+        <div className="hidden md:flex items-center gap-6">
+          {links.map(l => (
+            <a key={l} href="#" className="text-sm text-slate-600 hover:text-green-700 transition-colors font-medium">{l}</a>
+          ))}
+        </div>
+        <div className="hidden md:flex items-center gap-3">
+          <button className="text-sm font-medium text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors">Log in</button>
+          <button onClick={onEnterApp} className="text-sm font-semibold text-white bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg transition-colors shadow-sm">Get Started</button>
+        </div>
+        <button className="md:hidden text-slate-600" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </div>
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-slate-100 px-4 py-4 flex flex-col gap-3">
+          {links.map(l => <a key={l} href="#" className="text-sm font-medium text-slate-700 py-1">{l}</a>)}
+          <div className="flex gap-3 pt-2">
+            <button className="flex-1 text-sm font-medium text-slate-700 py-2 border border-slate-200 rounded-lg">Log in</button>
+            <button onClick={onEnterApp} className="flex-1 text-sm font-semibold text-white bg-green-600 py-2 rounded-lg">Get Started</button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
 
-          if (target) {
-            const [tag, attrs, children] = target;
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", tag);
-            
-            Object.entries({
-              ...attrs,
-              width: size,
-              height: size,
-              class: className,
-              "stroke-width": strokeWidth,
-              fill: fill
-            }).forEach(([k, v]) => svg.setAttribute(k, v));
+function Hero({ onEnterApp }) {
+  const features = [
+    { icon: <Zap size={14} />, label: "AI Risk Analysis" },
+    { icon: <BadgeCheck size={14} />, label: "Identity Verification" },
+    { icon: <AlertTriangle size={14} />, label: "Scam Detection" },
+    { icon: <Star size={14} />, label: "Reputation Scores" },
+  ];
 
-            if (children && children.length) {
-              children.forEach(([cTag, cAttrs]) => {
-                const childEl = document.createElementNS("http://www.w3.org/2000/svg", cTag);
-                Object.entries(cAttrs).forEach(([ck, cv]) => childEl.setAttribute(ck, cv));
-                svg.appendChild(childEl);
-              });
-            }
-            iconRef.current.appendChild(svg);
-          }
-        }
-      }, [name, size, className, strokeWidth, fill]);
-
-      return <span ref={iconRef} className="inline-flex items-center justify-center line-none" />;
-    }
-
-    // ─── MAIN APPLICATION ROUTER ──────────────────────────────────────────────────
-    function VeriLifeApp() {
-      const [view, setView] = useState("landing"); // "landing" | "dashboard"
-      const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-      return (
-        <div className="min-h-screen bg-slate-50">
-          {view === "landing" ? (
-            <div className="min-h-screen flex flex-col justify-between">
-              {/* Navbar */}
-              <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                      <SafeIcon name="Shield" size={18} className="text-white" strokeWidth={2.5} />
-                    </div>
-                    <span class="text-xl font-bold text-slate-900 tracking-tight">VeriLife</span>
-                  </div>
-
-                  <div class="hidden md:flex items-center gap-6">
-                    {["Features", "How It Works", "Use Cases", "Pricing", "Blog", "About Us"].map(l => (
-                      <a key={l} href="#" class="text-sm text-slate-600 hover:text-green-700 font-medium">{l}</a>
-                    ))}
-                  </div>
-
-                  <div class="hidden md:flex items-center gap-3">
-                    <button class="text-sm font-medium text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-100">Log in</button>
-                    <button onClick={() => setView("dashboard")} class="text-sm font-semibold text-white bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg shadow-sm">Get Started</button>
-                  </div>
-
-                  <button class="md:hidden text-slate-600 focus:outline-none" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                    {mobileMenuOpen ? <SafeIcon name="X" size={22} /> : <SafeIcon name="Menu" size={22} />}
-                  </button>
+  return (
+    <section className="relative overflow-hidden bg-white pt-16 pb-24">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full bg-green-50 opacity-70" />
+        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-green-50 opacity-50" />
+      </div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-green-200">
+              <Sparkles size={12} />
+              AI-Powered Trust & Decision Intelligence
+            </span>
+            <h1 className="text-5xl sm:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight mb-6">
+              Make Smarter<br />Decisions.<br />Live a{" "}
+              <span className="text-green-600">Safer</span> Life.
+            </h1>
+            <p className="text-lg text-slate-500 mb-8 leading-relaxed">
+              VeriLife uses advanced AI to instantly verify links, phone numbers, emails, and more — giving you the confidence to act without doubt.
+            </p>
+            <div className="flex flex-wrap gap-3 mb-10">
+              <button onClick={onEnterApp} className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-green-200 text-sm">
+                Start Free Analysis <ArrowRight size={16} />
+              </button>
+              <button className="inline-flex items-center gap-2 text-slate-700 font-semibold border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl transition-all text-sm bg-white">
+                <div className="w-7 h-7 bg-slate-900 rounded-full flex items-center justify-center">
+                  <Play size={10} className="text-white ml-0.5" fill="white" />
                 </div>
-
-                {mobileMenuOpen && (
-                  <div class="md:hidden bg-white border-t border-slate-100 px-4 py-4 flex flex-col gap-3 shadow-sm">
-                    {["Features", "How It Works", "Use Cases", "Pricing", "Blog", "About Us"].map(l => (
-                      <a key={l} href="#" class="text-sm font-medium text-slate-700 py-1 px-2 hover:bg-slate-50 rounded-md">{l}</a>
-                    ))}
-                    <div class="flex gap-3 pt-2">
-                      <button class="flex-1 text-sm font-medium text-slate-700 py-2 border border-slate-200 rounded-lg">Log in</button>
-                      <button onClick={() => { setMobileMenuOpen(false); setView("dashboard"); }} class="flex-1 text-sm font-semibold text-white bg-green-600 py-2 rounded-lg">Get Started</button>
-                    </div>
-                  </div>
-                )}
-              </nav>
-
-              {/* Hero */}
-              <section class="relative overflow-hidden bg-white pt-12 pb-20 flex-1 flex items-center">
-                <div class="absolute inset-0 pointer-events-none">
-                  <div class="absolute -top-40 -right-40 w-[650px] h-[650px] rounded-full bg-green-50/70" />
-                </div>
-
-                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                  <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
-                    <div class="max-w-xl">
-                      <span class="inline-flex items-center gap-2 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-green-200">
-                        <SafeIcon name="Sparkles" size={12} />
-                        AI-Powered Trust & Decision Intelligence
-                      </span>
-
-                      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight tracking-tight mb-6">
-                        Make Smarter<br />Decisions.<br />Live a <span class="text-green-600">Safer</span> Life.
-                      </h1>
-
-                      <p class="text-base sm:text-lg text-slate-500 mb-8 leading-relaxed">
-                        VeriLife uses advanced AI to instantly verify links, phone numbers, emails, and more — giving you the confidence to act without doubt.
-                      </p>
-
-                      <div class="flex flex-wrap gap-3 mb-10">
-                        <button onClick={() => setView("dashboard")} class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-green-200 text-sm">
-                          Start Free Analysis <SafeIcon name="ArrowRight" size={16} />
-                        </button>
-                        <button class="inline-flex items-center gap-2 text-slate-700 font-semibold border border-slate-200 hover:border-slate-300 px-6 py-3 rounded-xl text-sm bg-white">
-                          <div class="w-6 h-6 bg-slate-900 rounded-full flex items-center justify-center text-white">
-                            <SafeIcon name="Play" size={10} className="ml-0.5 fill-current" />
-                          </div>
-                          Watch Demo
-                        </button>
-                      </div>
-
-                      <div class="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-100 pt-6">
-                        {/* Micro badges features matching recording exactly */}
-                        <span class="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                          <span class="text-green-600"><SafeIcon name="Zap" size={14} /></span> AI Risk Analysis
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                          <span class="text-green-600"><SafeIcon name="BadgeCheck" size={14} /></span> Identity Verification
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                          <span class="text-green-600"><SafeIcon name="AlertTriangle" size={14} /></span> Scam Detection
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                          <span class="text-green-600"><SafeIcon name="Star" size={14} /></span> Reputation Scores
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Phone Preview Mockup Device from Recording */}
-                    <div class="relative mt-12 lg:mt-0 flex justify-center lg:justify-end">
-                      <div class="relative w-64 h-[460px] bg-slate-900 rounded-[40px] shadow-2xl border-4 border-slate-700 overflow-hidden flex flex-col">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-slate-900 rounded-b-2xl z-10" />
-                        <div class="flex-1 bg-gradient-to-b from-slate-800 to-slate-900 p-5 pt-8 flex flex-col">
-                          <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center gap-1.5">
-                              <SafeIcon name="Shield" size={14} className="text-green-400" />
-                              <span class="text-green-400 text-xs font-bold">VeriLife</span>
-                            </div>
-                            <SafeIcon name="Bell" size={13} className="text-slate-400" />
-                          </div>
-                          <div class="text-white font-bold text-base leading-snug mb-1">Analyze Anything.</div>
-                          <div class="text-green-400 font-bold text-base leading-snug mb-5">Decide Everything.</div>
-                          <div class="bg-slate-700/60 rounded-xl p-3 flex items-center gap-2 mb-4">
-                            <SafeIcon name="Search" size={12} className="text-slate-400" />
-                            <span class="text-slate-400 text-xs">Paste a link or number...</span>
-                          </div>
-                          <div class="grid grid-cols-2 gap-2 mb-5">
-                            {["Link", "Phone", "Email", "Doc"].map((lbl, idx) => (
-                              <div key={lbl} class="bg-slate-700/50 rounded-xl p-2.5 flex flex-col items-center gap-1">
-                                <span class="text-green-400"><SafeIcon name={idx === 0 ? "Link2" : idx === 1 ? "Phone" : idx === 2 ? "Mail" : "FileText"} size={14} /></span>
-                                <span class="text-slate-300 text-xs font-medium">{lbl}</span>
-                              </div>
-                            ))}
-                          </div>
-                          <div class="bg-green-600/20 border border-green-600/30 rounded-xl p-3">
-                            <div class="flex items-center gap-2 mb-1">
-                              <SafeIcon name="CheckCircle" size={12} class="text-green-400" />
-                              <span class="text-green-400 text-xs font-semibold">Safe</span>
-                            </div>
-                            <div class="text-slate-300 text-xs">+234 812 345 6789</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Pillars list */}
-              <section class="py-16 bg-slate-50 border-t border-slate-100">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div class="text-center mb-12">
-                    <h2 class="text-3xl font-extrabold text-slate-900 mb-3">Why people trust VeriLife</h2>
-                    <p class="text-slate-500 text-sm max-w-md mx-auto">Three pillars that keep you protected across every digital interaction.</p>
-                  </div>
-                  <div class="grid sm:grid-cols-3 gap-6">
-                    {[
-                      { icon: "AlertTriangle", clr: "text-red-500", title: "Scam Protection", desc: "Real-time alerts before you fall victim.", bg: "bg-red-50 border-red-100", txt: "text-red-700" },
-                      { icon: "Sparkles", clr: "text-green-600", title: "AI Decision Maker", desc: "Instant AI analysis of any input.", bg: "bg-green-50 border-green-100", txt: "text-green-700" },
-                      { icon: "Globe", clr: "text-green-600", title: "Global Trust Network", desc: "Community-sourced reputation data.", bg: "bg-green-50 border-green-100", txt: "text-green-700" },
-                    ].map(c => (
-                      <div key={c.title} class={`rounded-2xl border p-6 ${c.bg}`}>
-                        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm mb-4">
-                          <SafeIcon name={c.icon} size={18} className={c.clr} />
-                        </div>
-                        <h3 class={`font-bold text-base mb-1 ${c.txt}`}>{c.title}</h3>
-                        <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">{c.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* Footer */}
-              <footer class="bg-slate-900 text-slate-400 py-8 px-6 text-center text-xs">
-                <p>© 2026 VeriLife Inc. · Privacy Policy · Terms</p>
-              </footer>
+                Watch Demo
+              </button>
             </div>
-          ) : (
-            /* ─── INTERACTIVE DASHBOARD VIEW FROM VIDEO ─── */
-            <div class="flex h-screen bg-slate-100 overflow-hidden relative">
-              {sidebarOpen && (
-                <div class="fixed inset-0 bg-slate-900/40 z-40 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
-              )}
-
-              {/* Sidebar Menu Panel */}
-              <aside class={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col transition-transform duration-200 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-                <div class="h-16 flex items-center justify-between px-5 border-b border-slate-100 flex-shrink-0">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 bg-green-600 rounded-lg flex items-center justify-center text-white">
-                      <SafeIcon name="Shield" size={15} strokeWidth={2.5} />
-                    </div>
-                    <span class="text-base font-bold text-slate-900">VeriLife</span>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {features.map(f => (
+                <span key={f.label} className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                  <span className="text-green-600">{f.icon}</span>
+                  {f.label}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="relative mt-16 lg:mt-0 flex justify-center lg:justify-end">
+            <PhoneMockup />
+            <div className="absolute -left-4 bottom-10 bg-green-600 text-white rounded-2xl p-4 shadow-xl w-56">
+              <div className="flex items-center gap-2 mb-1">
+                <Shield size={14} className="text-green-200" />
+                <span className="text-xs font-semibold text-green-100">Trusted by thousands</span>
+              </div>
+              <div className="text-2xl font-bold mb-1">12,458+</div>
+              <div className="text-xs text-green-200 mb-3">Analyses completed today</div>
+              <svg viewBox="0 0 80 24" className="w-full h-6 opacity-70">
+                <polyline points="0,20 15,14 30,16 45,8 60,10 75,4 80,6" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div className="absolute -left-4 top-8 bg-white rounded-2xl p-3 shadow-lg flex items-center gap-3 border border-slate-100">
+              <div className="flex -space-x-2">
+                {["#16a34a","#0ea5e9","#f59e0b","#8b5cf6"].map((c, i) => (
+                  <div key={i} className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: c }}>
+                    {["A","B","C","D"][i]}
                   </div>
-                  <button class="lg:hidden text-slate-400 p-1" onClick={() => setSidebarOpen(false)}>
-                    <SafeIcon name="X" size={18} />
-                  </button>
-                </div>
-
-                <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-                  {[
-                    { label: "Decision Maker", icon: "Sparkles", active: true },
-                    { label: "Verifications", icon: "BadgeCheck" },
-                    { label: "Scans", icon: "Search" },
-                    { label: "Watchlist", icon: "BookMarked" },
-                    { label: "My Reputation", icon: "User" },
-                    { label: "Messages", icon: "MessageSquare", bdg: 3 },
-                    { label: "Reports", icon: "ClipboardList" },
-                    { label: "Settings", icon: "Settings" }
-                  ].map(m => (
-                    <button key={m.label} class={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium ${m.active ? "bg-green-50 text-green-700" : "text-slate-600 hover:bg-slate-50"}`}>
-                      <span class="flex items-center gap-3"><SafeIcon name={m.icon} size={16} />{m.label}</span>
-                      {m.bdg && <span class="text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold">{m.bdg}</span>}
-                    </button>
-                  ))}
-                </nav>
-
-                {/* Premium Promo Card */}
-                <div class="p-3 border-t border-slate-100">
-                  <div class="bg-gradient-to-br from-green-600 to-green-800 rounded-xl p-4 text-white">
-                    <div class="flex items-center gap-2 mb-1.5">
-                      <SafeIcon name="Star" size={13} className="text-yellow-300" fill="#fde047" />
-                      <span class="text-xs font-bold">Go Premium</span>
-                    </div>
-                    <p class="text-[11px] text-green-100 mb-3 leading-tight">Unlock unlimited security scanning endpoints.</p>
-                    <button class="w-full bg-white text-green-700 text-xs font-bold py-1.5 rounded-md">Upgrade Now</button>
-                  </div>
-                </div>
-              </aside>
-
-              {/* Main Dashboard Layout Console */}
-              <div class="flex-1 flex flex-col overflow-hidden">
-                <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
-                  <div class="flex items-center gap-3">
-                    <button class="lg:hidden text-slate-500 p-1 rounded-md" onClick={() => setSidebarOpen(true)}>
-                      <SafeIcon name="Menu" size={20} />
-                    </button>
-                    <h1 class="font-extrabold text-slate-900 text-base sm:text-lg">Decision Maker</h1>
-                  </div>
-                  <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-sm font-bold">D</div>
-                </header>
-
-                <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-                  {/* Search Console Input Section */}
-                  <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-xs border border-slate-200">
-                    <h2 class="text-xs font-semibold text-slate-400 mb-2.5">What do you want to analyze today?</h2>
-                    <div class="flex items-center gap-3 border border-slate-200 rounded-xl px-3 py-1.5 bg-slate-50 mb-4">
-                      <SafeIcon name="Search" size={15} className="text-slate-400" />
-                      <input type="text" placeholder="Paste link, phone number, email, username..." class="flex-1 bg-transparent text-sm outline-none py-1" />
-                      <button class="bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1"><SafeIcon name="Sparkles" size={12} /> Analyze</button>
-                    </div>
-
-                    <div class="flex flex-wrap gap-2">
-                      {["Link", "Phone Number", "Email", "Username", "Document", "Text"].map((t, idx) => (
-                        <button key={t} class={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg border ${idx === 0 ? "bg-green-50 border-green-300 text-green-700" : "bg-white border-slate-200 text-slate-500"}`}>
-                          <SafeIcon name={idx === 0 ? "Link2" : idx === 1 ? "Phone" : idx === 2 ? "Mail" : idx === 3 ? "User" : idx === 4 ? "FileText" : "BookOpen"} size={12} /> {t}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 3-Column Performance Stats Deck */}
-                  <div class="grid lg:grid-cols-3 gap-6">
-                    {/* Recent list */}
-                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200">
-                      <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-slate-800 text-sm">Recent Analyses</h3>
-                        <button class="text-xs text-green-600 font-medium">View all</button>
-                      </div>
-                      <div class="space-y-2.5">
-                        {[
-                          { icon: "Phone", label: "+234 812 345 6789", type: "Phone", status: "Safe", col: "text-green-600 bg-green-50 border-green-200" },
-                          { icon: "Mail", label: "joboffer@example.com", type: "Email", status: "Risky", col: "text-orange-600 bg-orange-50 border-orange-200" },
-                          { icon: "Link2", label: "invest-winner.com", type: "Website", status: "Danger", col: "text-red-600 bg-red-50 border-red-200" }
-                        ].map((a, i) => (
-                          <div key={i} class="flex items-center justify-between py-1.5 border-b border-slate-50 last:border-0">
-                            <div class="flex items-center gap-2 min-w-0">
-                              <div class="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-500"><SafeIcon name={a.icon} size={13} /></div>
-                              <div class="min-w-0"><div class="text-xs font-medium text-slate-800 truncate">{a.label}</div></div>
-                            </div>
-                            <span class={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${a.col}`}>{a.status}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Circular Semicircle Progress Gauge Arc component */}
-                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200 flex flex-col items-center justify-between min-h-[180px]">
-                      <h3 class="font-bold text-slate-800 text-sm self-start">Overall Trust Score</h3>
-                      <div class="relative w-36 h-20 overflow-hidden flex justify-center mt-2">
-                        <svg class="w-36 h-36 transform -rotate-180" viewBox="0 0 120 120">
-                          <circle cx="60" cy="60" r="50" fill="transparent" stroke="#f1f5f9" strokeWidth="10" strokeLinecap="round" />
-                          <circle cx="60" cy="60" r="50" fill="transparent" stroke="#16a34a" strokeWidth="10" strokeDasharray="157" strokeDashoffset="35" strokeLinecap="round" />
-                        </svg>
-                        <div class="absolute bottom-0 text-center">
-                          <span class="text-2xl font-extrabold text-slate-900">78</span>
-                          <p class="text-[10px] text-slate-400 font-bold">/100</p>
-                        </div>
-                      </div>
-                      <div class="text-xs font-bold text-green-700 mt-2">Good Standing Profile</div>
-                    </div>
-
-                    {/* AI Advisor Box */}
-                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200 flex flex-col justify-between">
-                      <div class="bg-green-50 border border-green-100 rounded-xl p-3 text-xs text-slate-600 leading-relaxed">
-                        Endpoint is verified safe. No dynamic risk vector profiles detected on infrastructure parameters.
-                      </div>
-                      <div class="space-y-2 mt-3">
-                        {["Identity Verified", "Clear History Check"].map((chk) => (
-                          <div key={chk} class="flex items-center gap-2 text-xs text-slate-600">
-                            <SafeIcon name="CheckCircle" size={13} class="text-green-500" /> <span>{chk}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Return Navigation Anchor */}
-                  <button onClick={() => setView("landing")} class="text-xs text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1 pt-4">
-                    ← Back to landing page
-                  </button>
-                </main>
+                ))}
+              </div>
+              <div>
+                <div className="flex text-yellow-400 text-xs leading-none">★★★★★</div>
+                <div className="text-xs font-bold text-slate-800">4.9/5</div>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      );
-    }
+      </div>
+    </section>
+  );
+}
 
-    // Secure application rendering initialization
-    const container = document.getElementById('root');
-    const root = ReactDOM.createRoot(container);
-    root.render(<VeriLifeApp />);
-  </script>
-</body>
-</html>
+function PhoneMockup() {
+  const actions = [
+    { icon: <Link2 size={14} />, label: "Link" },
+    { icon: <Phone size={14} />, label: "Phone" },
+    { icon: <Mail size={14} />, label: "Email" },
+    { icon: <FileText size={14} />, label: "Doc" },
+  ];
+  return (
+    <div className="relative w-64 h-[500px] bg-slate-900 rounded-[40px] shadow-2xl border-4 border-slate-700 overflow-hidden flex flex-col">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-slate-900 rounded-b-2xl z-10" />
+      <div className="flex-1 bg-gradient-to-b from-slate-800 to-slate-900 p-5 pt-8 flex flex-col">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-1.5">
+            <Shield size={14} className="text-green-400" />
+            <span className="text-green-400 text-xs font-bold">VeriLife</span>
+          </div>
+          <Bell size={13} className="text-slate-400" />
+        </div>
+        <div className="text-white font-bold text-base leading-snug mb-1">Analyze Anything.</div>
+        <div className="text-green-400 font-bold text-base leading-snug mb-5">Decide Everything.</div>
+        <div className="bg-slate-700/60 rounded-xl p-3 flex items-center gap-2 mb-4">
+          <Search size={12} className="text-slate-400" />
+          <span className="text-slate-400 text-xs">Paste a link or number...</span>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mb-5">
+          {actions.map(a => (
+            <div key={a.label} className="bg-slate-700/50 hover:bg-slate-600/50 transition-colors rounded-xl p-2.5 flex flex-col items-center gap-1 cursor-pointer">
+              <span className="text-green-400">{a.icon}</span>
+              <span className="text-slate-300 text-xs font-medium">{a.label}</span>
+            </div>
+          ))}
+        </div>
+        <div className="bg-green-600/20 border border-green-600/30 rounded-xl p-3">
+          <div className="flex items-center gap-2 mb-1">
+            <CheckCircle size={12} className="text-green-400" />
+            <span className="text-green-400 text-xs font-semibold">Safe</span>
+          </div>
+          <div className="text-slate-300 text-xs">+234 812 345 6789</div>
+          <div className="text-slate-500 text-xs">Verified · Low Risk</div>
+        </div>
+      </div>
+      <div className="h-8 bg-slate-900 flex items-center justify-center">
+        <div className="w-20 h-1 bg-slate-600 rounded-full" />
+      </div>
+    </div>
+  );
+}
+
+function ShowcaseSection() {
+  const cards = [
+    { icon: <AlertTriangle size={18} className="text-red-500" />, title: "Scam Protection", desc: "Real-time alerts before you fall victim.", bg: "bg-red-50 border-red-100", accent: "text-red-700" },
+    { icon: <Sparkles size={18} className="text-green-600" />, title: "AI Decision Maker", desc: "Instant AI analysis of any input.", bg: "bg-green-50 border-green-100", accent: "text-green-700" },
+    { icon: <Globe size={18} className="text-green-600" />, title: "Global Trust Network", desc: "Community-sourced reputation data.", bg: "bg-green-50 border-green-100", accent: "text-green-700" },
+  ];
+  return (
+    <section className="py-24 bg-slate-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-extrabold text-slate-900 mb-4">Why people trust VeriLife</h2>
+          <p className="text-slate-500 text-lg max-w-xl mx-auto">Three pillars that keep you protected across every digital interaction.</p>
+        </div>
+        <div className="grid sm:grid-cols-3 gap-6">
+          {cards.map(c => (
+            <div key={c.title} className={`rounded-2xl border p-6 ${c.bg}`}>
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm mb-4">{c.icon}</div>
+              <h3 className={`font-bold text-lg mb-1 ${c.accent}`}>{c.title}</h3>
+              <p className="text-slate-500 text-sm">{c.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-slate-900 text-slate-400 py-10 px-6 text-center text-sm">
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <div className="w-6 h-6 bg-green-600 rounded-md flex items-center justify-center">
+          <Shield size={13} className="text-white" />
+        </div>
+        <span className="text-white font-bold">VeriLife</span>
+      </div>
+      <p>© 2025 VeriLife Inc. · Privacy Policy · Terms of Service</p>
+    </footer>
+  );
+}
+
+function Dashboard({ onBack }) {
+  const [activeNav, setActiveNav] = useState("Decision Maker");
+  const [analyzeInput, setAnalyzeInput] = useState("");
+  const [activeTab, setActiveTab] = useState("Link");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navItems = [
+    { label: "Decision Maker", icon: <Sparkles size={16} /> },
+    { label: "Verifications", icon: <BadgeCheck size={16} /> },
+    { label: "Scans", icon: <Search size={16} /> },
+    { label: "Watchlist", icon: <BookMarked size={16} /> },
+    { label: "My Reputation", icon: <User size={16} /> },
+    { label: "Messages", icon: <MessageSquare size={16} />, badge: 3 },
+    { label: "Reports", icon: <ClipboardList size={16} /> },
+    { label: "Settings", icon: <Settings size={16} /> },
+  ];
+
+  const analysisTabs = [
+    { label: "Link", icon: <Link2 size={13} /> },
+    { label: "Phone Number", icon: <Phone size={13} /> },
+    { label: "Email", icon: <Mail size={13} /> },
+    { label: "Username", icon: <User size={13} /> },
+    { label: "Document", icon: <FileText size={13} /> },
+    { label: "Text", icon: <BookOpen size={13} /> },
+  ];
+
+  const recentAnalyses = [
+    { icon: <Phone size={14} />, label: "+234 812 345 6789", type: "Phone", status: "Safe", color: "text-green-600 bg-green-50 border-green-200" },
+    { icon: <Mail size={14} />, label: "joboffer@example.com", type: "Email", status: "Risky", color: "text-orange-600 bg-orange-50 border-orange-200" },
+    { icon: <Link2 size={14} />, label: "invest-winner.com", type: "Website", status: "Danger", color: "text-red-600 bg-red-50 border-red-200" },
+    { icon: <FileText size={14} />, label: "Real Estate Proposal", type: "Document", status: "Safe", color: "text-green-600 bg-green-50 border-green-200" },
+  ];
+
+  const checklist = [
+    "Identity Verified",
+    "Clear History",
+    "Low Risk Indicators",
+    "Community Feedback (Positive)",
+  ];
+
+  return (
+    <div className="flex h-screen bg-slate-100 overflow-hidden">
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/40 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      <aside className={`fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-slate-100 flex flex-col transition-transform duration-200 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+        <div className="h-16 flex items-center gap-2 px-5 border-b border-slate-100">
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+            <Shield size={16} className="text-white" strokeWidth={2.5} />
+          </div>
+          <span className="text-lg font-extrabold text-slate-900 tracking-tight">VeriLife</span>
+        </div>
+
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+          {navItems.map(item => (
+            <button
+              key={item.label}
+              onClick={() => { setActiveNav(item.label); setSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${activeNav === item.label ? "bg-green-50 text-green-700" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
+            >
+              <span className="flex items-center gap-3">{item.icon}{item.label}</span>
+              {item.badge && (
+                <span className="text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center font-bold">{item.badge}</span>
+              )}
+            </button>
+          ))}
+        </nav>
+
+        <div className="p-3">
+          <div className="bg-gradient-to-br from-green-600 to-green-800 rounded-2xl p-4 text-white">
+            <div className="flex items-center gap-2 mb-2">
+              <Star size={14} className="text-yellow-300" fill="#fde047" />
+              <span className="text-xs font-bold text-green-100">Go Premium</span>
+            </div>
+            <p className="text-xs text-green-100 mb-3 leading-relaxed">Unlock unlimited analyses, priority AI, and advanced reports.</p>
+            <button className="w-full bg-white text-green-700 text-xs font-bold py-2 rounded-lg hover:bg-green-50 transition-colors">Upgrade Now</button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <button className="lg:hidden text-slate-500" onClick={() => setSidebarOpen(true)}>
+              <Menu size={20} />
+            </button>
+            <div>
+              <h1 className="font-extrabold text-slate-900 text-base sm:text-lg leading-none">Decision Maker</h1>
+              <p className="text-xs text-slate-400 mt-0.5 hidden sm:block">Get AI-powered insights to make the right decisions.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button className="hidden sm:flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">
+              <Plus size={14} /> New Analysis
+            </button>
+            <button className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+              <Bell size={18} />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+            </button>
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 cursor-pointer hover:bg-slate-100 transition-colors">
+              <div className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">D</div>
+              <div className="hidden sm:block">
+                <div className="text-xs font-semibold text-slate-800 leading-none">David O.</div>
+                <div className="text-xs text-green-600 font-medium">Premium</div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 mb-6 shadow-sm border border-slate-100">
+            <h2 className="text-sm font-semibold text-slate-500 mb-3">What do you want to analyze today?</h2>
+            <div className="flex items-center gap-3 border border-slate-200 rounded-xl px-4 py-3 focus-within:border-green-400 focus-within:ring-2 focus-within:ring-green-100 transition-all mb-4">
+              <Search size={16} className="text-slate-400 flex-shrink-0" />
+              <input
+                value={analyzeInput}
+                onChange={e => setAnalyzeInput(e.target.value)}
+                placeholder="Paste link, phone number, email, username or describe your situation..."
+                className="flex-1 text-sm text-slate-700 placeholder-slate-400 outline-none bg-transparent"
+              />
+              <button className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+                <Sparkles size={13} /> Analyze
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {analysisTabs.map(t => (
+                <button
+                  key={t.label}
+                  onClick={() => setActiveTab(t.label)}
+                  className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${activeTab === t.label ? "bg-green-50 border-green-300 text-green-700" : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"}`}
+                >
+                  {t.icon} {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-5 mb-6">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-slate-800 text-sm">Recent Analyses</h3>
+                <button className="text-xs text-green-600 font-medium hover:underline">View all</button>
+              </div>
+              <div className="space-y-3">
+                {recentAnalyses.map((a, i) => (
+                  <div key={i} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-500">{a.icon}</div>
+                      <div className="min-w-0">
+                        <div className="text-xs font-medium text-slate-800 truncate">{a.label}</div>
+                        <div className="text-xs text-slate-400">{a.type}</div>
+                      </div>
+                    </div>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border flex-shrink-0 ml-2 ${a.color}`}>{a.status}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col items-center">
+              <h3 className="font-bold text-slate-800 text-sm mb-4 self-start">Overall Trust Score</h3>
+              <TrustGauge score={78} />
+              <div className="text-center mt-4 mb-4">
+                <div className="text-sm font-bold text-green-700 mb-1">Good</div>
+                <div className="text-xs text-slate-400">Your reputation is positive. Keep it up!</div>
+              </div>
+              <button className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold py-2.5 rounded-xl transition-colors">View Reputation</button>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+              <h3 className="font-bold text-slate-800 text-sm mb-3">AI Recommendation</h3>
+              <div className="bg-green-50 border border-green-100 rounded-xl p-4 mb-4">
+                <div className="flex items-start gap-2 mb-2">
+                  <div className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Shield size={13} className="text-white" />
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Based on our analysis, this appears to be <strong>legitimate</strong> with minor risks. Proceed with standard caution.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {checklist.map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <CheckCircle size={14} className="text-green-500 flex-shrink-0" />
+                    <span className="text-xs text-slate-600">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Lock size={18} className="text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-white text-sm sm:text-base">Stay protected. Stay informed. Stay ahead.</h4>
+                <p className="text-slate-400 text-xs mt-0.5">Enable real-time monitoring across all your digital touchpoints.</p>
+              </div>
+            </div>
+            <button className="flex-shrink-0 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors">Enable Protection</button>
+          </div>
+
+          <button onClick={onBack} className="mt-5 text-xs text-slate-400 hover:text-slate-600 transition-colors">
+            ← Back to landing page
+          </button>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function TrustGauge({ score }) {
+  const radius = 70;
+  const cx = 90;
+  const cy = 90;
+  const circumference = Math.PI * radius;
+  const progress = (score / 100) * circumference;
+  const gap = circumference - progress;
+  const getColor = s => s >= 75 ? "#16a34a" : s >= 50 ? "#f59e0b" : "#ef4444";
+
+  return (
+    <div className="relative">
+      <svg width="180" height="110" viewBox="0 0 180 110">
+        <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke="#f1f5f9" strokeWidth="14" strokeLinecap="round" />
+        <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke={getColor(score)} strokeWidth="14" strokeLinecap="round" strokeDasharray={`${progress} ${gap}`} strokeDashoffset="0" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center pt-8">
+        <div className="text-center">
+          <div className="text-3xl font-extrabold text-slate-900">{score}</div>
+          <div className="text-xs text-slate-400">/100</div>
+        </div>
+      </div>
+    </div>
+  );
+}
